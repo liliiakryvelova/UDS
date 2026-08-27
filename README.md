@@ -70,5 +70,11 @@ Seed output includes demo token `sample-manage-token` for `/registrations/manage
 
 ## Source Spec
 
-See [../docs/events-module-spec.md](../docs/events-module-spec.md).
+See [docs/events-module-spec.md](docs/events-module-spec.md).
+
+## Google VM Database Path
+
+If you want Google-only hosting with low initial cost, follow:
+
+- [docs/google-e2-micro-postgres.md](docs/google-e2-micro-postgres.md)
 
