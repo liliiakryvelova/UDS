@@ -43,6 +43,12 @@ npm run db:seed
 
 Seed output includes demo token `sample-manage-token` for `/registrations/manage/:token`.
 
+## Free Database Path (Recommended)
+
+Use Neon free tier with this guide:
+
+- [docs/neon-free-setup.md](docs/neon-free-setup.md)
+
 ## Key Routes
 
 - `/` - UDS starter landing page
