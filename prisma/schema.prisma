@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CommunityStatus {
+  active
+  inactive
+}
+
+enum EventStatus {
+  draft
+  published
+  registration_closed
+  cancelled
+  completed
+}
+
+enum EventType {
+  tournament
+  practice
+  festival
+  volunteer
+  workshop
+}
+
+enum RegistrationStatus {
+  confirmed
+  waitlisted
+  cancelled
+  checked_in
+}
+
+model Community {
+  id        String          @id @default(cuid())
+  name      String
+  slug      String          @unique
+  status    CommunityStatus @default(active)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  events        Event[]
+  registrations Registration[]
+}
+
+model Event {
+  id                   String      @id @default(cuid())
+  communityId          String
+  name                 String
+  shortDescription     String
+  fullDescription      String
+  eventType            EventType
+  status               EventStatus @default(draft)
+  startDate            DateTime
+  endDate              DateTime
+  timezone             String
+  registrationDeadline DateTime
+  venueName            String
+  fullAddress          String
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  community     Community       @relation(fields: [communityId], references: [id], onDelete: Restrict)
+  slots         EventSlot[]
+  registrations Registration[]
+
+  @@index([communityId, status, startDate])
+}
+
+model EventSlot {
+  id            String   @id @default(cuid())
+  eventId       String
+  slotDate      DateTime
+  startTime     String
+  endTime       String
+  roleName      String
+  peopleNeeded  Int
+  meetingPoint  String?
+  instructions  String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  event          Event           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  registrations  Registration[]
+
+  @@index([eventId, slotDate])
+}
+
+model Registration {
+  id                    String             @id @default(cuid())
+  eventId               String
+  slotId                String
+  communityId           String
+  fullName              String
+  email                 String
+  phone                 String
+  notes                 String?
+  consentWaiverAccepted Boolean
+  status                RegistrationStatus @default(confirmed)
+  cancelledAt           DateTime?
+  cancellationReason    String?
+  manageTokenHash       String             @unique
+  createdIp             String?
+  updatedIp             String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  slot      EventSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Restrict)
+
+  @@index([eventId, slotId, status])
+  @@index([email])
+  @@unique([slotId, email, status])
+}

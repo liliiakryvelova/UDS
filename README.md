@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## UDS Events Module (Starter)
 
-## Getting Started
+This app is the initial implementation for the UDS multi-community Events module.
+It currently includes:
 
-First, run the development server:
+- Next.js App Router project setup
+- Public community event listing pages
+- Event details and slot visibility
+- Token-based manage-registration page
+- API route scaffolds aligned with the module spec
+- Admin API and dashboard placeholders
+
+## Local Development
+
+Run the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Setup (PostgreSQL + Prisma)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Create a local `.env` file from `.env.example` and update `DATABASE_URL`.
+2. Generate Prisma client:
 
-## Learn More
+```bash
+npm run db:generate
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Apply schema to your database:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run db:push
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Seed sample data:
 
-## Deploy on Vercel
+```bash
+npm run db:seed
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Seed output includes demo token `sample-manage-token` for `/registrations/manage/:token`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Routes
+
+- `/` - UDS starter landing page
+- `/c/uds/events` - UDS published events
+- `/c/catchball/events` - Catchball published events
+- `/admin/events` - Admin dashboard placeholder
+- `/registrations/manage/:token` - Token-based registration management
+
+## API Routes (Current)
+
+- `GET /api/communities/:slug/events`
+- `GET /api/events/:eventId`
+- `GET /api/events/:eventId/slots`
+- `POST /api/events/:eventId/registrations`
+- `GET|PATCH|DELETE /api/registrations/manage/:token`
+- Admin route stubs under `/api/admin/*`
+
+## Next Build Steps
+
+- Add persistent database (Prisma + PostgreSQL recommended)
+- Add admin authentication and authorization
+- Add email notifications for confirmation/update/reminder flows
+- Implement transactional concurrency controls for slot capacity
+- Replace in-memory mock store with service and repository layers
+
+## Source Spec
+
+See [../docs/events-module-spec.md](../docs/events-module-spec.md).
+
