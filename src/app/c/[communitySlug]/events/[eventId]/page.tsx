@@ -1,6 +1,9 @@
 import EventSignupForm from "@/components/event-signup-form";
+import AdminEventQuickActions from "@/components/admin-event-quick-actions";
+import EventVolunteerList from "@/components/event-volunteer-list";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { hasAdminPageSession } from "@/lib/auth/admin-guard";
 import { getEventById, getRegistrationsByEventId, getSlotsByEventId } from "@/lib/domain/store";
 
 export const dynamic = "force-dynamic";
@@ -27,16 +30,13 @@ function eventTypeLabel(eventType: string) {
   return eventType.charAt(0).toUpperCase() + eventType.slice(1);
 }
 
-function slotLabel(slotDate: string, startTime: string, endTime: string, roleName: string) {
-  return `${slotDate} | ${startTime} - ${endTime} | ${roleName}`;
-}
-
 export default async function EventDetailsPage({
   params,
 }: {
   params: Promise<{ communitySlug: string; eventId: string }>;
 }) {
   const { communitySlug, eventId } = await params;
+  const isAdminLoggedIn = await hasAdminPageSession();
   const event = await getEventById(eventId);
 
   if (!event) {
@@ -98,6 +98,8 @@ export default async function EventDetailsPage({
         </div>
       </section>
 
+      {isAdminLoggedIn ? <AdminEventQuickActions eventId={event.id} eventName={event.name} /> : null}
+
       <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-950">Why this event matters</h2>
@@ -155,40 +157,11 @@ export default async function EventDetailsPage({
         </div>
       </section>
 
-      <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-950">Confirmed volunteers</h2>
-            <p className="text-sm text-slate-600">People already signed up for this event.</p>
-          </div>
-          <span className="rounded-full bg-white px-3 py-1 text-sm text-sky-700 ring-1 ring-sky-200">
-            {confirmedRegistrations.length} signed up
-          </span>
-        </div>
-
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {confirmedRegistrations.length > 0 ? (
-            confirmedRegistrations.map((registration) => {
-              const slot = eventSlots.find((record) => record.id === registration.slotId);
-
-              return (
-                <article key={registration.id} className="rounded-xl border border-sky-200 bg-white p-4">
-                  <p className="text-base font-semibold text-slate-950">{registration.fullName}</p>
-                  <p className="mt-1 text-sm text-slate-700">
-                    {slot
-                      ? slotLabel(slot.slotDate, slot.startTime, slot.endTime, slot.roleName)
-                      : "Volunteer shift assigned"}
-                  </p>
-                </article>
-              );
-            })
-          ) : (
-            <p className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-600">
-              No volunteers have signed up yet.
-            </p>
-          )}
-        </div>
-      </section>
+      <EventVolunteerList
+        registrations={confirmedRegistrations}
+        slots={eventSlots}
+        isAdminLoggedIn={isAdminLoggedIn}
+      />
 
       <EventSignupForm eventId={event.id} slots={eventSlots} />
     </main>

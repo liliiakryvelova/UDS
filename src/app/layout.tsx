@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { DM_Serif_Display } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { hasAdminPageSession } from "@/lib/auth/admin-guard";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,7 +27,9 @@ export const metadata: Metadata = {
   description: "Multi-community events and registration platform",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const isAdminLoggedIn = await hasAdminPageSession();
+
   return (
     <html
       lang="en"
@@ -55,12 +58,35 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               >
                 UDS Events
               </Link>
-              <Link
-                href="/admin/login"
-                className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
-              >
-                Admin Login
-              </Link>
+
+              {isAdminLoggedIn ? (
+                <>
+                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                    Admin Logged In
+                  </span>
+                  <Link
+                    href="/admin/events"
+                    className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+                  >
+                    Admin Dashboard
+                  </Link>
+                  <form action="/api/admin/logout" method="post">
+                    <button
+                      type="submit"
+                      className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+                    >
+                      Log Out
+                    </button>
+                  </form>
+                </>
+              ) : (
+                <Link
+                  href="/admin/login"
+                  className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+                >
+                  Admin Login
+                </Link>
+              )}
             </nav>
           </div>
         </header>
