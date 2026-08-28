@@ -26,13 +26,13 @@ export default async function ManageRegistrationPage({
         Your volunteer signup is saved. You can review the details below and return to the event anytime.
       </p>
 
-      <section className="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+      <section className="mt-6 rounded-3xl border border-sky-200 bg-sky-50 p-6 shadow-sm">
         {!registration ? (
           <p className="text-sm text-red-600">Registration not found for this token.</p>
         ) : (
           <div className="space-y-4 text-sm text-slate-700">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Signed up as</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Signed up as</p>
               <p className="mt-1 text-2xl font-bold text-slate-950">{registration.fullName}</p>
               <p className="mt-1 text-slate-700">{registration.email}</p>
               <p className="text-slate-700">{registration.phone}</p>

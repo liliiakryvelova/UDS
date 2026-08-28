@@ -98,7 +98,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
   }
 
   return (
-    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="mt-6 rounded-2xl border border-sky-200 bg-sky-50/60 p-6 shadow-sm">
       <h2 className="text-xl font-semibold text-slate-900">Manage Event</h2>
 
       <form
@@ -111,12 +111,12 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
 
         <label className="text-sm text-slate-700">
           Event name
-          <input name="name" defaultValue={event.name} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="name" defaultValue={event.name} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
           Event type
-          <select name="eventType" defaultValue={event.eventType} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
+          <select name="eventType" defaultValue={event.eventType} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2">
             <option value="volunteer">Volunteer</option>
             <option value="practice">Practice</option>
             <option value="tournament">Tournament</option>
@@ -127,12 +127,12 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
 
         <label className="text-sm text-slate-700">
           Start date
-          <input type="date" name="startDate" defaultValue={event.startDate} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input type="date" name="startDate" defaultValue={event.startDate} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
           End date
-          <input type="date" name="endDate" defaultValue={event.endDate} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input type="date" name="endDate" defaultValue={event.endDate} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
@@ -141,18 +141,18 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
             type="datetime-local"
             name="registrationDeadline"
             defaultValue={toDatetimeLocal(event.registrationDeadline)}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
         <label className="text-sm text-slate-700">
           Place
-          <input name="place" defaultValue={event.venueName} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="place" defaultValue={event.venueName} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
           Captain
-          <input name="captainName" defaultValue={event.captainName ?? ""} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="captainName" defaultValue={event.captainName ?? ""} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
@@ -161,7 +161,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
             name="supplies"
             rows={3}
             defaultValue={suppliesToText(event.supplies)}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -171,7 +171,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
             name="shortDescription"
             rows={2}
             defaultValue={event.shortDescription}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -181,7 +181,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
             name="fullDescription"
             rows={4}
             defaultValue={event.fullDescription}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -191,7 +191,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
             type="time"
             name="slotStartTime"
             defaultValue={slot?.startTime ?? "09:00"}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -201,7 +201,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
             type="time"
             name="slotEndTime"
             defaultValue={slot?.endTime ?? "12:00"}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -212,13 +212,13 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
             min={1}
             name="peopleNeeded"
             defaultValue={slot?.peopleNeeded ?? 5}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
         <label className="text-sm text-slate-700">
           Status
-          <select name="status" defaultValue={event.status} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
+          <select name="status" defaultValue={event.status} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2">
             <option value="published">Published</option>
             <option value="draft">Draft</option>
             <option value="registration_closed">Registration Closed</option>
@@ -228,7 +228,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
         <button
           type="submit"
           disabled={isSaving}
-          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 md:col-span-2"
+          className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 md:col-span-2"
         >
           {isSaving ? "Saving..." : "Save changes"}
         </button>
@@ -237,7 +237,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
       <div className="mt-4 flex items-center justify-between gap-3">
         <a
           href={`/c/uds/events/${event.id}`}
-          className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+          className="rounded-full border border-sky-300 bg-white px-4 py-2 text-sm font-medium text-slate-700"
         >
           View public page
         </a>

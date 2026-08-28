@@ -99,13 +99,13 @@ export default function AdminVolunteerList({ registrations, slots }: AdminVolunt
   }
 
   return (
-    <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50/60 p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-950">Volunteers</h2>
           <p className="text-sm text-slate-600">Edit volunteer details or remove them from this event.</p>
         </div>
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">{items.length} total</span>
+        <span className="rounded-full bg-white px-3 py-1 text-sm text-sky-700 ring-1 ring-sky-200">{items.length} total</span>
       </div>
 
       {status ? <p className="mt-4 text-sm text-slate-700">{status}</p> : null}
@@ -116,7 +116,7 @@ export default function AdminVolunteerList({ registrations, slots }: AdminVolunt
             const isEditing = editingId === registration.id;
             const isBusy = busyId === registration.id;
             return (
-              <article key={registration.id} className="rounded-2xl border border-slate-200 p-4">
+              <article key={registration.id} className="rounded-2xl border border-sky-200 bg-white p-4">
                 {isEditing && editable ? (
                   <form
                     className="grid gap-3 md:grid-cols-2"
@@ -126,19 +126,19 @@ export default function AdminVolunteerList({ registrations, slots }: AdminVolunt
                   >
                     <label className="text-sm text-slate-700">
                       Full name
-                      <input name="fullName" defaultValue={editable.fullName} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+                      <input name="fullName" defaultValue={editable.fullName} className="mt-1 w-full rounded-xl border border-sky-200 px-3 py-2" />
                     </label>
                     <label className="text-sm text-slate-700">
                       Email
-                      <input name="email" type="email" defaultValue={editable.email} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+                      <input name="email" type="email" defaultValue={editable.email} className="mt-1 w-full rounded-xl border border-sky-200 px-3 py-2" />
                     </label>
                     <label className="text-sm text-slate-700">
                       Phone
-                      <input name="phone" defaultValue={editable.phone} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+                      <input name="phone" defaultValue={editable.phone} className="mt-1 w-full rounded-xl border border-sky-200 px-3 py-2" />
                     </label>
                     <label className="text-sm text-slate-700">
                       Shift
-                      <select name="slotId" defaultValue={editable.slotId} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
+                      <select name="slotId" defaultValue={editable.slotId} className="mt-1 w-full rounded-xl border border-sky-200 px-3 py-2">
                         {slots.map((slot) => (
                           <option key={slot.id} value={slot.id}>
                             {slot.slotDate} | {slot.startTime}-{slot.endTime} | {slot.roleName}
@@ -148,20 +148,20 @@ export default function AdminVolunteerList({ registrations, slots }: AdminVolunt
                     </label>
                     <label className="text-sm text-slate-700 md:col-span-2">
                       Notes
-                      <textarea name="notes" rows={3} defaultValue={editable.notes} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+                      <textarea name="notes" rows={3} defaultValue={editable.notes} className="mt-1 w-full rounded-xl border border-sky-200 px-3 py-2" />
                     </label>
                     <div className="flex flex-wrap gap-3 md:col-span-2">
                       <button
                         type="submit"
                         disabled={isBusy}
-                        className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                        className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
                       >
                         {isBusy ? "Saving..." : "Save volunteer"}
                       </button>
                       <button
                         type="button"
                         onClick={() => setEditingId(null)}
-                        className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+                        className="rounded-full border border-sky-300 bg-sky-50 px-4 py-2 text-sm font-medium text-slate-700"
                       >
                         Cancel
                       </button>
@@ -189,7 +189,7 @@ export default function AdminVolunteerList({ registrations, slots }: AdminVolunt
                       <button
                         type="button"
                         onClick={() => setEditingId(registration.id)}
-                        className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+                        className="rounded-full border border-sky-300 bg-sky-50 px-4 py-2 text-sm font-medium text-slate-700"
                       >
                         Edit
                       </button>

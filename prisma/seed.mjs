@@ -14,17 +14,6 @@ async function main() {
     create: { id: "com-uds", name: "UDS", slug: "uds", status: "active" },
   });
 
-  await prisma.community.upsert({
-    where: { id: "com-catchball" },
-    update: { name: "Catchball Community", slug: "catchball", status: "active" },
-    create: {
-      id: "com-catchball",
-      name: "Catchball Community",
-      slug: "catchball",
-      status: "active",
-    },
-  });
-
   await prisma.event.upsert({
     where: { id: "ev-uds-volunteer-day" },
     update: {
@@ -57,41 +46,6 @@ async function main() {
       registrationDeadline: new Date("2026-09-10T18:00:00Z"),
       venueName: "Central Community Hub",
       fullAddress: "45 Community St, Kyiv",
-    },
-  });
-
-  await prisma.event.upsert({
-    where: { id: "ev-catchball-festival" },
-    update: {
-      communityId: "com-catchball",
-      name: "Catchball Summer Festival",
-      shortDescription: "Open festival with practice courts and mentorship.",
-      fullDescription:
-        "A two-day festival with beginner-friendly sessions, advanced scrimmages, and volunteer support roles.",
-      eventType: "festival",
-      status: "published",
-      startDate: new Date("2026-09-20T00:00:00Z"),
-      endDate: new Date("2026-09-21T00:00:00Z"),
-      timezone: "Europe/Kyiv",
-      registrationDeadline: new Date("2026-09-18T20:00:00Z"),
-      venueName: "Riverfront Sports Campus",
-      fullAddress: "9 Riverfront Ave, Kyiv",
-    },
-    create: {
-      id: "ev-catchball-festival",
-      communityId: "com-catchball",
-      name: "Catchball Summer Festival",
-      shortDescription: "Open festival with practice courts and mentorship.",
-      fullDescription:
-        "A two-day festival with beginner-friendly sessions, advanced scrimmages, and volunteer support roles.",
-      eventType: "festival",
-      status: "published",
-      startDate: new Date("2026-09-20T00:00:00Z"),
-      endDate: new Date("2026-09-21T00:00:00Z"),
-      timezone: "Europe/Kyiv",
-      registrationDeadline: new Date("2026-09-18T20:00:00Z"),
-      venueName: "Riverfront Sports Campus",
-      fullAddress: "9 Riverfront Ave, Kyiv",
     },
   });
 
@@ -145,33 +99,6 @@ async function main() {
       peopleNeeded: 10,
       meetingPoint: "Court A",
       instructions: "Wear comfortable shoes and bring water.",
-      isActive: true,
-    },
-  });
-
-  await prisma.eventSlot.upsert({
-    where: { id: "slot-3" },
-    update: {
-      eventId: "ev-catchball-festival",
-      slotDate: new Date("2026-09-20T00:00:00Z"),
-      startTime: "10:00",
-      endTime: "14:00",
-      roleName: "Court Host",
-      peopleNeeded: 4,
-      meetingPoint: "North Courts",
-      instructions: "Coordinate schedule and participant groups.",
-      isActive: true,
-    },
-    create: {
-      id: "slot-3",
-      eventId: "ev-catchball-festival",
-      slotDate: new Date("2026-09-20T00:00:00Z"),
-      startTime: "10:00",
-      endTime: "14:00",
-      roleName: "Court Host",
-      peopleNeeded: 4,
-      meetingPoint: "North Courts",
-      instructions: "Coordinate schedule and participant groups.",
       isActive: true,
     },
   });

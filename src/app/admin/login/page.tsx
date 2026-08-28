@@ -11,13 +11,16 @@ export default async function AdminLoginPage({
 
   return (
     <main className="mx-auto w-full max-w-md px-6 py-16">
-      <h1 className="text-3xl font-bold tracking-tight">Admin Login</h1>
-      <p className="mt-2 text-sm text-slate-600">Sign in to create and manage events.</p>
+      <section className="rounded-3xl border border-sky-200 bg-gradient-to-br from-white via-sky-50 to-blue-100 p-6 shadow-sm">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Admin area</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight">Admin Login</h1>
+        <p className="mt-2 text-sm text-slate-600">Sign in to create and manage events.</p>
+      </section>
 
       <form
         action="/api/admin/login"
         method="post"
-        className="mt-8 space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="mt-8 space-y-4 rounded-2xl border border-sky-200 bg-sky-50/60 p-6 shadow-sm"
       >
         <input type="hidden" name="next" value={next} />
 
@@ -27,7 +30,7 @@ export default async function AdminLoginPage({
             type="email"
             name="email"
             required
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -37,7 +40,7 @@ export default async function AdminLoginPage({
             type="password"
             name="password"
             required
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -45,7 +48,7 @@ export default async function AdminLoginPage({
 
         <button
           type="submit"
-          className="w-full rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+          className="w-full rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white"
         >
           Log In
         </button>

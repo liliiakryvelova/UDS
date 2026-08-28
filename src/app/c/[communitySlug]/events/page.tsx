@@ -50,13 +50,13 @@ export default async function CommunityEventsPage({
           items.map((event) => (
             <article
               key={event.id}
-              className="group flex h-full flex-col rounded-3xl border border-slate-200/80 bg-white/95 p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
+              className="group flex h-full flex-col rounded-3xl border border-sky-200 bg-sky-50/70 p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="flex items-start justify-between gap-3">
-                <p className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-700">
+                <p className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-sky-700 ring-1 ring-sky-200">
                   {eventTypeLabel(event.eventType)}
                 </p>
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
+                <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700 ring-1 ring-sky-200">
                   {event.status.replace("_", " ")}
                 </span>
               </div>
@@ -65,17 +65,17 @@ export default async function CommunityEventsPage({
               <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-700">{event.shortDescription}</p>
 
               <div className="mt-5 space-y-2 text-sm text-slate-700">
-                <p className="rounded-xl bg-slate-50 px-3 py-2">
+                <p className="rounded-xl bg-white px-3 py-2 ring-1 ring-sky-100">
                   <span className="font-semibold text-slate-900">When:</span> {formatDateRange(event.startDate, event.endDate)}
                 </p>
-                <p className="rounded-xl bg-slate-50 px-3 py-2">
+                <p className="rounded-xl bg-white px-3 py-2 ring-1 ring-sky-100">
                   <span className="font-semibold text-slate-900">Where:</span> {event.venueName}
                 </p>
               </div>
 
               <Link
                 href={`/c/${communitySlug}/events/${event.id}`}
-                className="mt-6 inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition group-hover:bg-sky-700"
+                className="mt-6 inline-flex items-center justify-center rounded-full bg-sky-800 px-5 py-2.5 text-sm font-semibold text-white transition group-hover:bg-sky-900"
               >
                 Open Event
               </Link>

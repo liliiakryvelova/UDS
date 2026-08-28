@@ -55,11 +55,11 @@ export default async function EventDetailsPage({
         {"<- Back to events"}
       </Link>
 
-      <section className="mt-5 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+      <section className="mt-5 overflow-hidden rounded-[2rem] border border-sky-200 bg-white shadow-sm">
         <div className="grid gap-8 p-8 lg:grid-cols-[1.3fr_0.7fr] lg:p-10">
           <div>
             <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              <span className="rounded-full bg-slate-900 px-3 py-1 text-white">{eventTypeLabel(event.eventType)}</span>
+              <span className="rounded-full bg-sky-800 px-3 py-1 text-white">{eventTypeLabel(event.eventType)}</span>
               <span>{event.status.replace("_", " ")}</span>
             </div>
 
@@ -67,9 +67,9 @@ export default async function EventDetailsPage({
             <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-700">{event.fullDescription}</p>
 
             <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-700">
-              <span className="rounded-full bg-slate-100 px-4 py-2">{formatDateRange(event.startDate, event.endDate)}</span>
-              <span className="rounded-full bg-slate-100 px-4 py-2">{event.timezone}</span>
-              <span className="rounded-full bg-slate-100 px-4 py-2">Registration closes {formatDateTime(event.registrationDeadline, event.timezone)}</span>
+              <span className="rounded-full bg-sky-50 px-4 py-2 ring-1 ring-sky-100">{formatDateRange(event.startDate, event.endDate)}</span>
+              <span className="rounded-full bg-sky-50 px-4 py-2 ring-1 ring-sky-100">{event.timezone}</span>
+              <span className="rounded-full bg-sky-50 px-4 py-2 ring-1 ring-sky-100">Registration closes {formatDateTime(event.registrationDeadline, event.timezone)}</span>
             </div>
           </div>
 
@@ -99,38 +99,38 @@ export default async function EventDetailsPage({
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-950">Why this event matters</h2>
           <p className="mt-3 text-sm leading-7 text-slate-700">
             {event.shortDescription}
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl bg-slate-50 p-4">
+            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Dates</p>
               <p className="mt-2 text-sm font-medium text-slate-900">{formatDateRange(event.startDate, event.endDate)}</p>
             </div>
-            <div className="rounded-xl bg-slate-50 p-4">
+            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Timezone</p>
               <p className="mt-2 text-sm font-medium text-slate-900">{event.timezone}</p>
             </div>
-            <div className="rounded-xl bg-slate-50 p-4">
+            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Captain</p>
               <p className="mt-2 text-sm font-medium text-slate-900">{event.captainName ?? "TBD"}</p>
             </div>
-            <div className="rounded-xl bg-slate-50 p-4">
+            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Supplies</p>
               <p className="mt-2 text-sm font-medium text-slate-900">{event.supplies.length > 0 ? event.supplies.join(", ") : "None listed"}</p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-950">Shift and role availability</h2>
           <div className="mt-4 space-y-3">
             {eventSlots.length > 0 ? (
               eventSlots.map((slot) => (
-                <div key={slot.id} className="rounded-xl border border-slate-200 p-4">
+                <div key={slot.id} className="rounded-xl border border-sky-200 bg-white p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-slate-900">
@@ -138,7 +138,7 @@ export default async function EventDetailsPage({
                       </p>
                       <p className="mt-1 text-sm text-slate-700">{slot.roleName}</p>
                     </div>
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                    <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 ring-1 ring-sky-100">
                       Need {slot.peopleNeeded}
                     </span>
                   </div>
@@ -155,13 +155,13 @@ export default async function EventDetailsPage({
         </div>
       </section>
 
-      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold text-slate-950">Confirmed volunteers</h2>
             <p className="text-sm text-slate-600">People already signed up for this event.</p>
           </div>
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
+          <span className="rounded-full bg-white px-3 py-1 text-sm text-sky-700 ring-1 ring-sky-200">
             {confirmedRegistrations.length} signed up
           </span>
         </div>
@@ -172,7 +172,7 @@ export default async function EventDetailsPage({
               const slot = eventSlots.find((record) => record.id === registration.slotId);
 
               return (
-                <article key={registration.id} className="rounded-xl border border-slate-200 p-4">
+                <article key={registration.id} className="rounded-xl border border-sky-200 bg-white p-4">
                   <p className="text-base font-semibold text-slate-950">{registration.fullName}</p>
                   <p className="mt-1 text-sm text-slate-700">
                     {slot

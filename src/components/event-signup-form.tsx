@@ -61,7 +61,7 @@ export default function EventSignupForm({ eventId, slots }: EventSignupFormProps
   }
 
   return (
-    <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50/60 p-6 shadow-sm">
       <h2 className="text-lg font-semibold">Sign Up for This Event</h2>
 
       <form
@@ -72,7 +72,7 @@ export default function EventSignupForm({ eventId, slots }: EventSignupFormProps
       >
         <label className="block text-sm text-slate-700">
           Shift and role
-          <select name="slotId" required disabled={!hasSlots} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 disabled:bg-slate-100">
+          <select name="slotId" required disabled={!hasSlots} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2 disabled:bg-slate-100">
             <option value="">Select shift</option>
             {slots.map((slot) => (
               <option key={slot.id} value={slot.id}>
@@ -84,22 +84,22 @@ export default function EventSignupForm({ eventId, slots }: EventSignupFormProps
 
         <label className="block text-sm text-slate-700">
           Full name
-          <input name="fullName" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="fullName" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="block text-sm text-slate-700">
           Email
-          <input type="email" name="email" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input type="email" name="email" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="block text-sm text-slate-700">
           Phone
-          <input name="phone" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="phone" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="block text-sm text-slate-700">
           Notes (optional)
-          <textarea name="notes" rows={3} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <textarea name="notes" rows={3} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="flex items-start gap-2 text-sm text-slate-700">
@@ -114,7 +114,7 @@ export default function EventSignupForm({ eventId, slots }: EventSignupFormProps
         <button
           type="submit"
           disabled={isSaving || !hasSlots}
-          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
           {isSaving ? "Submitting..." : "Register"}
         </button>

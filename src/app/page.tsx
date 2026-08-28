@@ -5,7 +5,6 @@ export const dynamic = "force-dynamic";
 
 const communities = [
   { slug: "uds", title: "UDS" },
-  { slug: "catchball", title: "Catchball Community" },
 ];
 
 export default async function Home() {
@@ -18,21 +17,12 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-12">
-      <div className="mb-6 flex justify-end gap-3">
-        <Link
-          href="/admin/login"
-          className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
-        >
-          Admin Login
-        </Link>
-      </div>
-
-      <section className="rounded-3xl bg-gradient-to-br from-emerald-800 via-emerald-700 to-cyan-700 p-8 text-white shadow-lg md:p-12">
-        <p className="text-xs uppercase tracking-[0.18em] text-emerald-100">UDS Public Dashboard</p>
+      <section className="rounded-3xl bg-gradient-to-br from-slate-900 via-sky-900 to-blue-700 p-8 text-white shadow-lg md:p-12">
+        <p className="text-xs uppercase tracking-[0.18em] text-sky-100">UDS Public Dashboard</p>
         <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">
-          Discover upcoming community events and volunteer opportunities.
+          Discover events and volunteer opportunities.
         </h1>
-        <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50 md:text-base">
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-sky-50 md:text-base">
           Browse upcoming public events, open the event page for details, and sign up as a volunteer.
           Admins can still reach the management area from the login button above.
         </p>
@@ -57,21 +47,21 @@ export default async function Home() {
                   <Link
                     key={event.id}
                     href={`/c/${group.slug}/events/${event.id}`}
-                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                    className="rounded-2xl border border-sky-200 bg-sky-50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                   >
-                    <p className="text-xs uppercase tracking-[0.12em] text-slate-500">{event.eventType}</p>
+                    <p className="text-xs uppercase tracking-[0.12em] text-sky-700">{event.eventType}</p>
                     <h3 className="mt-1 text-xl font-semibold text-slate-900">{event.name}</h3>
                     <p className="mt-2 text-sm text-slate-700">{event.shortDescription}</p>
                     <p className="mt-3 text-xs text-slate-600">
                       {event.startDate} - {event.endDate} | {event.venueName}
                     </p>
-                    <span className="mt-4 inline-flex rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white">
+                    <span className="mt-4 inline-flex rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition group-hover:bg-sky-900">
                       Open Event
                     </span>
                   </Link>
                 ))
               ) : (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-5 text-sm text-slate-600">
+                <div className="rounded-2xl border border-dashed border-sky-300 bg-sky-50 p-5 text-sm text-slate-600">
                   No upcoming events right now.
                 </div>
               )}

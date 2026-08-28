@@ -26,16 +26,16 @@ export default async function AdminEventManagePage({
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-12">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-sky-200 bg-gradient-to-br from-white via-sky-50 to-blue-100 p-6 shadow-sm">
         <div>
-          <p className="text-sm text-slate-500">Admin Event</p>
-          <h1 className="text-3xl font-bold tracking-tight">{event.name}</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Admin event</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">{event.name}</h1>
           <p className="mt-2 text-sm text-slate-600">
             Update details, manage the volunteer slot, or delete this event.
           </p>
         </div>
 
-        <Link href="/admin/events" className="rounded-full border border-slate-300 px-4 py-2 text-sm">
+        <Link href="/admin/events" className="rounded-full border border-sky-300 bg-white px-4 py-2 text-sm text-slate-700">
           Back to dashboard
         </Link>
       </div>

@@ -53,7 +53,7 @@ export default function AdminEventForm() {
   }
 
   return (
-    <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50/60 p-6 shadow-sm">
       <h2 className="text-xl font-semibold text-slate-900">Create Event</h2>
 
       <form
@@ -66,12 +66,12 @@ export default function AdminEventForm() {
 
         <label className="text-sm text-slate-700">
           Event name
-          <input name="name" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="name" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
           Event type
-          <select name="eventType" className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
+          <select name="eventType" className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2">
             <option value="volunteer">Volunteer</option>
             <option value="practice">Practice</option>
             <option value="tournament">Tournament</option>
@@ -82,12 +82,12 @@ export default function AdminEventForm() {
 
         <label className="text-sm text-slate-700">
           Start date
-          <input type="date" name="startDate" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input type="date" name="startDate" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
           End date
-          <input type="date" name="endDate" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input type="date" name="endDate" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
@@ -96,18 +96,18 @@ export default function AdminEventForm() {
             type="datetime-local"
             name="registrationDeadline"
             required
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
         <label className="text-sm text-slate-700">
           Place
-          <input name="place" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="place" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
           Captain
-          <input name="captainName" className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          <input name="captainName" className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
         <label className="text-sm text-slate-700">
@@ -115,7 +115,7 @@ export default function AdminEventForm() {
           <textarea
             name="supplies"
             rows={3}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -123,7 +123,7 @@ export default function AdminEventForm() {
           Short description
           <input
             name="shortDescription"
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -132,7 +132,7 @@ export default function AdminEventForm() {
           <textarea
             name="fullDescription"
             rows={3}
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -143,7 +143,7 @@ export default function AdminEventForm() {
             name="slotStartTime"
             defaultValue="09:00"
             required
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -154,7 +154,7 @@ export default function AdminEventForm() {
             name="slotEndTime"
             defaultValue="12:00"
             required
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
@@ -166,13 +166,13 @@ export default function AdminEventForm() {
             name="peopleNeeded"
             defaultValue={5}
             required
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
           />
         </label>
 
         <label className="text-sm text-slate-700">
           Status
-          <select name="status" className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
+          <select name="status" className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2">
             <option value="published">Published</option>
             <option value="draft">Draft</option>
           </select>
@@ -181,7 +181,7 @@ export default function AdminEventForm() {
         <button
           type="submit"
           disabled={isSaving}
-          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 md:col-span-2"
+          className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 md:col-span-2"
         >
           {isSaving ? "Creating..." : "Create event"}
         </button>

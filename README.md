@@ -75,7 +75,6 @@ Use Neon free tier with this guide:
 
 - `/` - UDS starter landing page
 - `/c/uds/events` - UDS published events
-- `/c/catchball/events` - Catchball published events
 - `/admin/events` - Admin dashboard placeholder
 - `/registrations/manage/:token` - Token-based registration management
 
