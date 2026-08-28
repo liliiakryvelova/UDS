@@ -55,16 +55,27 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               >
                 Dashboard
               </Link>
-              {!isUserLoggedIn ? (
-                <Link
-                  href="/signup"
-                  className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
-                >
-                  Sign Up
-                </Link>
-              ) : null}
-
-              {!isAdminLoggedIn && isUserLoggedIn ? (
+              {isAdminLoggedIn ? (
+                <>
+                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                    Admin
+                  </span>
+                  <Link
+                    href="/admin/events"
+                    className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+                  >
+                    Admin Dashboard
+                  </Link>
+                  <form action="/api/admin/logout" method="post">
+                    <button
+                      type="submit"
+                      className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+                    >
+                      Log Out
+                    </button>
+                  </form>
+                </>
+              ) : isUserLoggedIn ? (
                 <>
                   <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700">
                     {userSession?.fullName}
@@ -85,33 +96,19 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                   </form>
                 </>
               ) : (
-                <Link
-                  href="/login"
-                  className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
-                >
-                  Sign In
-                </Link>
-              )}
-
-              {isAdminLoggedIn ? (
                 <>
-                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
-                    Admin
-                  </span>
                   <Link
-                    href="/admin/events"
+                    href="/signup"
                     className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
                   >
-                    Admin Dashboard
+                    Sign Up
                   </Link>
-                  <form action="/api/admin/logout" method="post">
-                    <button
-                      type="submit"
-                      className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
-                    >
-                      Log Out
-                    </button>
-                  </form>
+                  <Link
+                    href="/login"
+                    className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+                  >
+                    Sign In
+                  </Link>
                 </>
               ) : null}
             </nav>
