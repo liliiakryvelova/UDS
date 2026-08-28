@@ -4,6 +4,7 @@ import EventVolunteerList from "@/components/event-volunteer-list";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { hasAdminPageSession } from "@/lib/auth/admin-guard";
+import { getUserSessionIdentity } from "@/lib/auth/user-guard";
 import { getEventById, getRegistrationsByEventId, getSlotsByEventId } from "@/lib/domain/store";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +38,7 @@ export default async function EventDetailsPage({
 }) {
   const { communitySlug, eventId } = await params;
   const isAdminLoggedIn = await hasAdminPageSession();
+  const userSession = await getUserSessionIdentity();
   const event = await getEventById(eventId);
 
   if (!event) {
@@ -163,7 +165,19 @@ export default async function EventDetailsPage({
         isAdminLoggedIn={isAdminLoggedIn}
       />
 
-      <EventSignupForm eventId={event.id} slots={eventSlots} />
+      <EventSignupForm
+        eventId={event.id}
+        slots={eventSlots}
+        signedInVolunteer={
+          userSession
+            ? {
+                fullName: userSession.fullName,
+                email: userSession.email,
+                phone: userSession.phone,
+              }
+            : null
+        }
+      />
     </main>
   );
 }

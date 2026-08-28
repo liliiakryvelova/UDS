@@ -1,7 +1,12 @@
 import { createHash, randomUUID } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
-import type { EventItem, Registration, ShiftRoleSlot } from "@/lib/domain/types";
+import type {
+  EventItem,
+  Registration,
+  ShiftRoleSlot,
+  UserEventRegistration,
+} from "@/lib/domain/types";
 
 function formatDateOnly(value: Date) {
   return value.toISOString().slice(0, 10);
@@ -459,4 +464,75 @@ export async function cancelRegistrationByToken(token: string) {
   });
 
   return mapRegistration(cancelled);
+}
+
+export async function createVolunteerAccount(input: {
+  communityId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  additionalInfo?: string;
+  passwordHash: string;
+}) {
+  return prisma.volunteerAccount.create({
+    data: {
+      communityId: input.communityId,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      email: input.email,
+      phone: input.phone || null,
+      additionalInfo: input.additionalInfo || null,
+      passwordHash: input.passwordHash,
+    },
+  });
+}
+
+export async function findVolunteerAccountByEmail(email: string) {
+  return prisma.volunteerAccount.findUnique({
+    where: {
+      email: email.toLowerCase(),
+    },
+  });
+}
+
+export async function getUserEventRegistrations(email: string): Promise<UserEventRegistration[]> {
+  const records = await prisma.registration.findMany({
+    where: {
+      email: { equals: email, mode: "insensitive" },
+    },
+    orderBy: [{ event: { startDate: "asc" } }, { createdAt: "desc" }],
+    include: {
+      event: {
+        include: {
+          community: {
+            select: { slug: true, name: true },
+          },
+        },
+      },
+      slot: true,
+    },
+  });
+
+  return records.map((record) => ({
+    registrationId: record.id,
+    registrationStatus: record.status as UserEventRegistration["registrationStatus"],
+    fullName: record.fullName,
+    email: record.email,
+    phone: record.phone,
+    eventId: record.event.id,
+    eventName: record.event.name,
+    eventStartDate: formatDateOnly(record.event.startDate),
+    eventEndDate: formatDateOnly(record.event.endDate),
+    eventTimezone: record.event.timezone,
+    eventVenueName: record.event.venueName,
+    eventStatus: record.event.status as UserEventRegistration["eventStatus"],
+    communitySlug: record.event.community.slug,
+    communityName: record.event.community.name,
+    slotDate: formatDateOnly(record.slot.slotDate),
+    slotStartTime: record.slot.startTime,
+    slotEndTime: record.slot.endTime,
+    slotRoleName: record.slot.roleName,
+    createdAt: record.createdAt.toISOString(),
+  }));
 }

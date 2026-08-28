@@ -59,3 +59,25 @@ export interface Registration {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface UserEventRegistration {
+  registrationId: string;
+  registrationStatus: RegistrationStatus;
+  fullName: string;
+  email: string;
+  phone: string;
+  eventId: string;
+  eventName: string;
+  eventStartDate: string;
+  eventEndDate: string;
+  eventTimezone: string;
+  eventVenueName: string;
+  eventStatus: EventStatus;
+  communitySlug: string;
+  communityName: string;
+  slotDate: string;
+  slotStartTime: string;
+  slotEndTime: string;
+  slotRoleName: string;
+  createdAt: string;
+}

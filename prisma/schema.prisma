@@ -45,6 +45,24 @@ model Community {
 
   events        Event[]
   registrations Registration[]
+  volunteers    VolunteerAccount[]
+}
+
+model VolunteerAccount {
+  id               String   @id @default(cuid())
+  communityId      String
+  firstName        String
+  lastName         String
+  email            String   @unique
+  phone            String?
+  additionalInfo   String?
+  passwordHash     String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  community Community @relation(fields: [communityId], references: [id], onDelete: Restrict)
+
+  @@index([communityId, lastName])
 }
 
 model Event {

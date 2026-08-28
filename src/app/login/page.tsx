@@ -1,24 +1,26 @@
 export const dynamic = "force-dynamic";
 
-export default async function AdminLoginPage({
+export default async function UserLoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string; next?: string }>;
 }) {
   const params = await searchParams;
   const hasError = params.error === "1";
-  const next = params.next ?? "/admin/events";
+  const next = params.next ?? "/my-events";
 
   return (
     <main className="mx-auto w-full max-w-md px-6 py-16">
       <section className="rounded-3xl border border-sky-200 bg-gradient-to-br from-white via-sky-50 to-blue-100 p-6 shadow-sm">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Admin area</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">Admin Sign In</h1>
-        <p className="mt-2 text-sm text-slate-600">Sign in to create and manage events.</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Volunteer area</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight">Volunteer Sign In</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Sign in to access your account and see all events you joined.
+        </p>
       </section>
 
       <form
-        action="/api/admin/login"
+        action="/api/user/login"
         method="post"
         className="mt-8 space-y-4 rounded-2xl border border-sky-200 bg-sky-50/60 p-6 shadow-sm"
       >
@@ -44,7 +46,9 @@ export default async function AdminLoginPage({
           />
         </label>
 
-        {hasError ? <p className="text-sm text-red-600">Invalid credentials.</p> : null}
+        {hasError ? (
+          <p className="text-sm text-red-600">Invalid email or password.</p>
+        ) : null}
 
         <button
           type="submit"
@@ -52,6 +56,18 @@ export default async function AdminLoginPage({
         >
           Sign In
         </button>
+
+        <p className="text-center text-xs text-slate-600">
+          New here?{" "}
+          <a href="/signup" className="font-medium text-sky-800 underline-offset-2 hover:underline">
+            Sign up
+          </a>
+          {" · "}
+          Admin access?{" "}
+          <a href="/admin/login" className="font-medium text-sky-800 underline-offset-2 hover:underline">
+            Sign in as admin
+          </a>
+        </p>
       </form>
     </main>
   );
