@@ -101,6 +101,16 @@ export default function AdminEventForm() {
         </label>
 
         <label className="text-sm text-slate-700">
+          Time zone (IANA)
+          <input
+            name="timezone"
+            defaultValue="Europe/Kyiv"
+            placeholder="Europe/Kyiv"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
+          />
+        </label>
+
+        <label className="text-sm text-slate-700">
           Place
           <input name="place" required className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>

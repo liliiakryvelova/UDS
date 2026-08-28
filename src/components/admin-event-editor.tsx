@@ -146,6 +146,16 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
         </label>
 
         <label className="text-sm text-slate-700">
+          Time zone (IANA)
+          <input
+            name="timezone"
+            defaultValue={event.timezone}
+            placeholder="Europe/Kyiv"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
+          />
+        </label>
+
+        <label className="text-sm text-slate-700">
           Place
           <input name="place" defaultValue={event.venueName} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
