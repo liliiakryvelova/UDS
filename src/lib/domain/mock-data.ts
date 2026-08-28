@@ -26,6 +26,8 @@ export const events: EventItem[] = [
     registrationDeadline: "2026-09-10T18:00:00Z",
     venueName: "Central Community Hub",
     fullAddress: "45 Community St, Kyiv",
+    captainName: "Alyona K.",
+    supplies: ["Banners", "Water", "First-aid kit"],
   },
   {
     id: "ev-catchball-festival",
@@ -42,6 +44,8 @@ export const events: EventItem[] = [
     registrationDeadline: "2026-09-18T20:00:00Z",
     venueName: "Riverfront Sports Campus",
     fullAddress: "9 Riverfront Ave, Kyiv",
+    captainName: "Mira L.",
+    supplies: ["Balls", "Score sheets"],
   },
 ];
 

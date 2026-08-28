@@ -1,7 +1,35 @@
+import EventSignupForm from "@/components/event-signup-form";
 import { notFound } from "next/navigation";
-import { getEventById, getSlotsByEventId } from "@/lib/domain/store";
+import Link from "next/link";
+import { getEventById, getRegistrationsByEventId, getSlotsByEventId } from "@/lib/domain/store";
 
 export const dynamic = "force-dynamic";
+
+function formatDateRange(startDate: string, endDate: string) {
+  const formatter = new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return `${formatter.format(new Date(startDate))} - ${formatter.format(new Date(endDate))}`;
+}
+
+function formatDateTime(value: string, timezone: string) {
+  return new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: timezone,
+  }).format(new Date(value));
+}
+
+function eventTypeLabel(eventType: string) {
+  return eventType.charAt(0).toUpperCase() + eventType.slice(1);
+}
+
+function slotLabel(slotDate: string, startTime: string, endTime: string, roleName: string) {
+  return `${slotDate} | ${startTime} - ${endTime} | ${roleName}`;
+}
 
 export default async function EventDetailsPage({
   params,
@@ -15,31 +43,154 @@ export default async function EventDetailsPage({
     notFound();
   }
 
-  const eventSlots = await getSlotsByEventId(event.id);
+  const [eventSlots, registrations] = await Promise.all([
+    getSlotsByEventId(event.id),
+    getRegistrationsByEventId(event.id),
+  ]);
+  const confirmedRegistrations = registrations.filter((registration) => registration.status === "confirmed");
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-12">
-      <a href={`/c/${communitySlug}/events`} className="text-sm text-slate-500">
+    <main className="mx-auto w-full max-w-6xl px-6 py-12">
+      <Link href={`/c/${communitySlug}/events`} className="text-sm text-slate-500 transition hover:text-slate-900">
         {"<- Back to events"}
-      </a>
+      </Link>
 
-      <h1 className="mt-4 text-3xl font-bold tracking-tight">{event.name}</h1>
-      <p className="mt-3 max-w-2xl text-slate-700">{event.fullDescription}</p>
-
-      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold">Shift and Role Availability</h2>
-        <div className="mt-4 space-y-3">
-          {eventSlots.map((slot) => (
-            <div key={slot.id} className="rounded-xl border border-slate-200 p-4">
-              <p className="text-sm font-semibold text-slate-900">
-                {slot.slotDate} | {slot.startTime} - {slot.endTime}
-              </p>
-              <p className="text-sm text-slate-700">{slot.roleName}</p>
-              <p className="text-xs text-slate-500">Capacity: {slot.peopleNeeded}</p>
+      <section className="mt-5 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+        <div className="grid gap-8 p-8 lg:grid-cols-[1.3fr_0.7fr] lg:p-10">
+          <div>
+            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <span className="rounded-full bg-slate-900 px-3 py-1 text-white">{eventTypeLabel(event.eventType)}</span>
+              <span>{event.status.replace("_", " ")}</span>
             </div>
-          ))}
+
+            <h1 className="mt-5 max-w-3xl text-4xl font-black tracking-tight text-slate-950 md:text-5xl">{event.name}</h1>
+            <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-700">{event.fullDescription}</p>
+
+            <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-700">
+              <span className="rounded-full bg-slate-100 px-4 py-2">{formatDateRange(event.startDate, event.endDate)}</span>
+              <span className="rounded-full bg-slate-100 px-4 py-2">{event.timezone}</span>
+              <span className="rounded-full bg-slate-100 px-4 py-2">Registration closes {formatDateTime(event.registrationDeadline, event.timezone)}</span>
+            </div>
+          </div>
+
+          <aside className="rounded-[1.5rem] border border-sky-200 bg-sky-50 p-6 text-slate-900">
+            <p className="text-sm uppercase tracking-[0.2em] text-sky-700">Event details</p>
+            <dl className="mt-4 space-y-4 text-sm">
+              <div>
+                <dt className="text-sky-700">Location</dt>
+                <dd className="mt-1 text-base font-medium text-slate-900">{event.venueName}</dd>
+                <dd className="text-slate-700">{event.fullAddress}</dd>
+              </div>
+              <div>
+                <dt className="text-sky-700">Captain</dt>
+                <dd className="mt-1 text-base font-medium text-slate-900">{event.captainName ?? "TBD"}</dd>
+              </div>
+              <div>
+                <dt className="text-sky-700">Volunteer slots</dt>
+                <dd className="mt-1 text-base font-medium text-slate-900">{eventSlots.length} available shift{eventSlots.length === 1 ? "" : "s"}</dd>
+              </div>
+              <div>
+                <dt className="text-sky-700">What to bring</dt>
+                <dd className="mt-1 text-base font-medium text-slate-900">{event.supplies.length > 0 ? event.supplies.join(", ") : "No supplies listed yet"}</dd>
+              </div>
+            </dl>
+          </aside>
         </div>
       </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-950">Why this event matters</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-700">
+            {event.shortDescription}
+          </p>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Dates</p>
+              <p className="mt-2 text-sm font-medium text-slate-900">{formatDateRange(event.startDate, event.endDate)}</p>
+            </div>
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Timezone</p>
+              <p className="mt-2 text-sm font-medium text-slate-900">{event.timezone}</p>
+            </div>
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Captain</p>
+              <p className="mt-2 text-sm font-medium text-slate-900">{event.captainName ?? "TBD"}</p>
+            </div>
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Supplies</p>
+              <p className="mt-2 text-sm font-medium text-slate-900">{event.supplies.length > 0 ? event.supplies.join(", ") : "None listed"}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-950">Shift and role availability</h2>
+          <div className="mt-4 space-y-3">
+            {eventSlots.length > 0 ? (
+              eventSlots.map((slot) => (
+                <div key={slot.id} className="rounded-xl border border-slate-200 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">
+                        {slot.slotDate} | {slot.startTime} - {slot.endTime}
+                      </p>
+                      <p className="mt-1 text-sm text-slate-700">{slot.roleName}</p>
+                    </div>
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                      Need {slot.peopleNeeded}
+                    </span>
+                  </div>
+                  {slot.meetingPoint ? <p className="mt-3 text-xs text-slate-500">Meet at {slot.meetingPoint}</p> : null}
+                  {slot.instructions ? <p className="mt-1 text-xs text-slate-500">{slot.instructions}</p> : null}
+                </div>
+              ))
+            ) : (
+              <p className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-600">
+                Volunteer shifts have not been added yet.
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-950">Confirmed volunteers</h2>
+            <p className="text-sm text-slate-600">People already signed up for this event.</p>
+          </div>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
+            {confirmedRegistrations.length} signed up
+          </span>
+        </div>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {confirmedRegistrations.length > 0 ? (
+            confirmedRegistrations.map((registration) => {
+              const slot = eventSlots.find((record) => record.id === registration.slotId);
+
+              return (
+                <article key={registration.id} className="rounded-xl border border-slate-200 p-4">
+                  <p className="text-base font-semibold text-slate-950">{registration.fullName}</p>
+                  <p className="mt-1 text-sm text-slate-700">
+                    {slot
+                      ? slotLabel(slot.slotDate, slot.startTime, slot.endTime, slot.roleName)
+                      : "Volunteer shift assigned"}
+                  </p>
+                </article>
+              );
+            })
+          ) : (
+            <p className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-600">
+              No volunteers have signed up yet.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <EventSignupForm eventId={event.id} slots={eventSlots} />
     </main>
   );
 }

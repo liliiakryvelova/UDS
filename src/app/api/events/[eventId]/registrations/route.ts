@@ -4,6 +4,7 @@ import {
   getEventById,
   getSlotsByEventId,
 } from "@/lib/domain/store";
+import { Prisma } from "@prisma/client";
 
 interface CreateRegistrationBody {
   slotId: string;
@@ -43,19 +44,38 @@ export async function POST(
     return Response.json({ error: "Slot is full" }, { status: 409 });
   }
 
-  const result = await createRegistration({
-    eventId,
-    slotId: payload.slotId,
-    communityId: event.communityId,
-    fullName: payload.fullName,
-    email: payload.email,
-    phone: payload.phone,
-    notes: payload.notes,
-    consentWaiverAccepted: payload.consentWaiverAccepted,
-  });
+  try {
+    const result = await createRegistration({
+      eventId,
+      slotId: payload.slotId,
+      communityId: event.communityId,
+      fullName: payload.fullName,
+      email: payload.email,
+      phone: payload.phone,
+      notes: payload.notes,
+      consentWaiverAccepted: payload.consentWaiverAccepted,
+    });
 
-  return Response.json({
-    registration: result.registration,
-    manageUrl: `/registrations/manage/${result.manageToken}`,
-  });
+    return Response.json({
+      registration: result.registration,
+      manageUrl: `/registrations/manage/${result.manageToken}`,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "SLOT_NOT_FOUND") {
+      return Response.json({ error: "Slot not found" }, { status: 404 });
+    }
+
+    if (error instanceof Error && error.message === "SLOT_FULL") {
+      return Response.json({ error: "Slot is full" }, { status: 409 });
+    }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return Response.json(
+        { error: "You are already registered for this shift with this email." },
+        { status: 409 },
+      );
+    }
+
+    return Response.json({ error: "Could not register right now. Please try again." }, { status: 500 });
+  }
 }

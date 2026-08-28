@@ -1,0 +1,13 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="udsGradient" x1="14" y1="14" x2="82" y2="82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#0369A1"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="84" height="84" rx="22" fill="url(#udsGradient)"/>
+  <rect x="11" y="11" width="74" height="74" rx="18" stroke="#BAE6FD" stroke-opacity="0.65" stroke-width="2"/>
+  <path d="M24 35V52C24 61.9411 30.7157 68 39 68C47.2843 68 54 61.9411 54 52V35" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M66 35H61C56.5817 35 53 38.5817 53 43C53 47.4183 56.5817 51 61 51H66C70.4183 51 74 54.5817 74 59C74 63.4183 70.4183 67 66 67H58" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="39" cy="52" r="2.5" fill="#E0F2FE"/>
+</svg>

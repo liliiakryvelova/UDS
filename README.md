@@ -43,6 +43,28 @@ npm run db:seed
 
 Seed output includes demo token `sample-manage-token` for `/registrations/manage/:token`.
 
+## Admin Login (Local)
+
+Set these in `.env` (or keep defaults for quick local testing):
+
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+
+Login page:
+
+- `/admin/login`
+
+After login, admin can create events with:
+
+- Event name
+- Date
+- Place
+- Captain
+- Supplies
+
+Public users can sign up from event details page.
+
 ## Free Database Path (Recommended)
 
 Use Neon free tier with this guide:

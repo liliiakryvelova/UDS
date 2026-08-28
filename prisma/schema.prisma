@@ -61,6 +61,8 @@ model Event {
   registrationDeadline DateTime
   venueName            String
   fullAddress          String
+  captainName          String?
+  supplies             String[]    @default([])
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
 

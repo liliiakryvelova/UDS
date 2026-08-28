@@ -28,6 +28,8 @@ export interface EventItem {
   registrationDeadline: string;
   venueName: string;
   fullAddress: string;
+  captainName?: string;
+  supplies: string[];
 }
 
 export interface ShiftRoleSlot {
