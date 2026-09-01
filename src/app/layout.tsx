@@ -110,7 +110,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                     Sign In
                   </Link>
                 </>
-              ) : null}
+              )}
             </nav>
           </div>
         </header>
