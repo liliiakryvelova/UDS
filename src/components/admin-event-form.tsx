@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 
+const TIMEZONE_OPTIONS = [
+  { value: "Europe/Kyiv", label: "Kyiv" },
+  { value: "America/Los_Angeles", label: "PTS (Pacific Time - Seattle/Los Angeles)" },
+  { value: "America/New_York", label: "ETS (Eastern Time - New York)" },
+];
+
 export default function AdminEventForm() {
   const [status, setStatus] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
@@ -101,13 +107,18 @@ export default function AdminEventForm() {
         </label>
 
         <label className="text-sm text-slate-700">
-          Time zone (IANA)
-          <input
+          Time zone
+          <select
             name="timezone"
             defaultValue="Europe/Kyiv"
-            placeholder="Europe/Kyiv"
             className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-          />
+          >
+            {TIMEZONE_OPTIONS.map((timezoneOption) => (
+              <option key={timezoneOption.value} value={timezoneOption.value}>
+                {timezoneOption.label}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label className="text-sm text-slate-700">

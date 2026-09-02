@@ -60,12 +60,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                   <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
                     Admin
                   </span>
-                  <Link
-                    href="/admin/events"
-                    className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
-                  >
-                    Admin Dashboard
-                  </Link>
                   <form action="/api/admin/logout" method="post">
                     <button
                       type="submit"

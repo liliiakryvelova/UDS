@@ -9,6 +9,12 @@ interface AdminEventEditorProps {
   slot: ShiftRoleSlot | null;
 }
 
+const TIMEZONE_OPTIONS = [
+  { value: "Europe/Kyiv", label: "Kyiv" },
+  { value: "America/Los_Angeles", label: "PTS (Pacific Time - Seattle/Los Angeles)" },
+  { value: "America/New_York", label: "ETS (Eastern Time - New York)" },
+];
+
 function toDatetimeLocal(value: string) {
   const date = new Date(value);
   const offsetMinutes = date.getTimezoneOffset();
@@ -25,6 +31,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
   const [status, setStatus] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const hasExistingTimeZoneOption = TIMEZONE_OPTIONS.some((timezoneOption) => timezoneOption.value === event.timezone);
 
   async function onSave(formData: FormData) {
     setIsSaving(true);
@@ -146,13 +153,21 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
         </label>
 
         <label className="text-sm text-slate-700">
-          Time zone (IANA)
-          <input
+          Time zone
+          <select
             name="timezone"
             defaultValue={event.timezone}
-            placeholder="Europe/Kyiv"
             className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-          />
+          >
+            {TIMEZONE_OPTIONS.map((timezoneOption) => (
+              <option key={timezoneOption.value} value={timezoneOption.value}>
+                {timezoneOption.label}
+              </option>
+            ))}
+            {!hasExistingTimeZoneOption ? (
+              <option value={event.timezone}>{`Current value (${event.timezone})`}</option>
+            ) : null}
+          </select>
         </label>
 
         <label className="text-sm text-slate-700">
