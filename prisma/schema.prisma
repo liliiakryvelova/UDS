@@ -61,8 +61,23 @@ model VolunteerAccount {
   updatedAt        DateTime @updatedAt
 
   community Community @relation(fields: [communityId], references: [id], onDelete: Restrict)
+  passwordResetTokens PasswordResetToken[]
 
   @@index([communityId, lastName])
+}
+
+model PasswordResetToken {
+  id          String   @id @default(cuid())
+  volunteerId String
+  tokenHash   String   @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  volunteer VolunteerAccount @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+
+  @@index([volunteerId, expiresAt])
+  @@index([expiresAt])
 }
 
 model Event {
@@ -71,6 +86,7 @@ model Event {
   name                 String
   shortDescription     String
   fullDescription      String
+  bannerImageUrl       String?
   eventType            EventType
   status               EventStatus @default(draft)
   startDate            DateTime

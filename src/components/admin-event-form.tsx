@@ -27,6 +27,7 @@ export default function AdminEventForm() {
       endDate: String(formData.get("endDate") ?? ""),
       registrationDeadline: String(formData.get("registrationDeadline") ?? ""),
       timezone: String(formData.get("timezone") ?? "Europe/Kyiv"),
+      bannerImageUrl: String(formData.get("bannerImageUrl") ?? ""),
       place: String(formData.get("place") ?? ""),
       captainName: String(formData.get("captainName") ?? ""),
       shortDescription: String(formData.get("shortDescription") ?? ""),
@@ -119,6 +120,16 @@ export default function AdminEventForm() {
               </option>
             ))}
           </select>
+        </label>
+
+        <label className="text-sm text-slate-700 md:col-span-2">
+          Banner image URL (optional)
+          <input
+            type="url"
+            name="bannerImageUrl"
+            placeholder="https://example.com/event-banner.jpg"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
+          />
         </label>
 
         <label className="text-sm text-slate-700">

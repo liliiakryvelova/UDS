@@ -33,7 +33,7 @@ export default function EventSignupForm({ eventId, slots, signedInVolunteer }: E
       email: String(formData.get("email") ?? signedInVolunteer?.email ?? ""),
       phone: String(formData.get("phone") ?? signedInVolunteer?.phone ?? ""),
       notes: String(formData.get("notes") ?? ""),
-      consentWaiverAccepted: formData.get("consentWaiverAccepted") === "on",
+      consentWaiverAccepted: isSignedInMode || formData.get("consentWaiverAccepted") === "on",
     };
 
     const response = await fetch(`/api/events/${eventId}/registrations`, {
@@ -126,14 +126,7 @@ export default function EventSignupForm({ eventId, slots, signedInVolunteer }: E
           <textarea name="notes" rows={3} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
-        {isSignedInMode ? (
-          <>
-            <input type="hidden" name="consentWaiverAccepted" value="on" />
-            <p className="text-xs text-slate-600">
-              By signing, you agree to event participation and waiver terms.
-            </p>
-          </>
-        ) : (
+        {isSignedInMode ? null : (
           <label className="flex items-start gap-2 text-sm text-slate-700">
             <input type="checkbox" name="consentWaiverAccepted" required className="mt-1" />
             I agree to event participation and waiver terms.

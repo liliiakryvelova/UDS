@@ -20,6 +20,7 @@ export interface EventItem {
   name: string;
   shortDescription: string;
   fullDescription: string;
+  bannerImageUrl?: string;
   eventType: "tournament" | "practice" | "festival" | "volunteer" | "workshop";
   status: EventStatus;
   startDate: string;

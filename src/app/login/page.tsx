@@ -3,10 +3,11 @@ export const dynamic = "force-dynamic";
 export default async function UserLoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; next?: string }>;
+  searchParams: Promise<{ error?: string; next?: string; reset?: string }>;
 }) {
   const params = await searchParams;
   const hasError = params.error === "1";
+  const wasReset = params.reset === "1";
   const next = params.next ?? "/my-events";
 
   return (
@@ -46,8 +47,18 @@ export default async function UserLoginPage({
           />
         </label>
 
+        <div className="-mt-2 text-right">
+          <a href="/forgot-password" className="text-xs font-medium text-sky-800 underline-offset-2 hover:underline">
+            Forgot password?
+          </a>
+        </div>
+
         {hasError ? (
           <p className="text-sm text-red-600">Invalid email or password.</p>
+        ) : null}
+
+        {wasReset ? (
+          <p className="text-sm text-emerald-700">Password updated successfully. Sign in with your new password.</p>
         ) : null}
 
         <button

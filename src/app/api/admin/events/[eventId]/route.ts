@@ -10,6 +10,7 @@ interface UpdateEventBody {
   endDate: string;
   registrationDeadline: string;
   timezone: string;
+  bannerImageUrl?: string;
   place: string;
   captainName?: string;
   shortDescription?: string;
@@ -61,6 +62,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ev
     endDate: body.endDate,
     registrationDeadline: body.registrationDeadline,
     timezone: body.timezone || "Europe/Kyiv",
+    bannerImageUrl: body.bannerImageUrl,
     place: body.place,
     captainName: body.captainName,
     shortDescription: body.shortDescription,

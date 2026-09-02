@@ -47,17 +47,27 @@ export default async function Home() {
                   <Link
                     key={event.id}
                     href={`/c/${group.slug}/events/${event.id}`}
-                    className="rounded-2xl border border-sky-200 bg-sky-50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                    className="overflow-hidden rounded-2xl border border-sky-200 bg-sky-50 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                   >
-                    <p className="text-xs uppercase tracking-[0.12em] text-sky-700">{event.eventType}</p>
-                    <h3 className="mt-1 text-xl font-semibold text-slate-900">{event.name}</h3>
-                    <p className="mt-2 text-sm text-slate-700">{event.shortDescription}</p>
-                    <p className="mt-3 text-xs text-slate-600">
-                      {event.startDate} - {event.endDate} | {event.venueName}
-                    </p>
-                    <span className="mt-4 inline-flex rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition group-hover:bg-sky-900">
-                      Open Event
-                    </span>
+                    {event.bannerImageUrl ? (
+                      <img
+                        src={event.bannerImageUrl}
+                        alt={`${event.name} banner`}
+                        className="h-44 w-full object-cover"
+                      />
+                    ) : null}
+
+                    <div className="p-5">
+                      <p className="text-xs uppercase tracking-[0.12em] text-sky-700">{event.eventType}</p>
+                      <h3 className="mt-1 text-xl font-semibold text-slate-900">{event.name}</h3>
+                      <p className="mt-2 text-sm text-slate-700">{event.shortDescription}</p>
+                      <p className="mt-3 text-xs text-slate-600">
+                        {event.startDate} - {event.endDate} | {event.venueName}
+                      </p>
+                      <span className="mt-4 inline-flex rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition group-hover:bg-sky-900">
+                        Open Event
+                      </span>
+                    </div>
                   </Link>
                 ))
               ) : (

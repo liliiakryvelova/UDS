@@ -48,6 +48,7 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
       endDate: String(formData.get("endDate") ?? ""),
       registrationDeadline: String(formData.get("registrationDeadline") ?? ""),
       timezone: String(formData.get("timezone") ?? event.timezone),
+      bannerImageUrl: String(formData.get("bannerImageUrl") ?? event.bannerImageUrl ?? ""),
       place: String(formData.get("place") ?? event.venueName),
       captainName: String(formData.get("captainName") ?? event.captainName ?? ""),
       shortDescription: String(formData.get("shortDescription") ?? event.shortDescription),
@@ -168,6 +169,17 @@ export default function AdminEventEditor({ event, slot }: AdminEventEditorProps)
               <option value={event.timezone}>{`Current value (${event.timezone})`}</option>
             ) : null}
           </select>
+        </label>
+
+        <label className="text-sm text-slate-700 md:col-span-2">
+          Banner image URL (optional)
+          <input
+            type="url"
+            name="bannerImageUrl"
+            defaultValue={event.bannerImageUrl ?? ""}
+            placeholder="https://example.com/event-banner.jpg"
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
+          />
         </label>
 
         <label className="text-sm text-slate-700">

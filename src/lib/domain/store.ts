@@ -1,6 +1,11 @@
 import { createHash, randomUUID } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
+import {
+  createPasswordResetToken,
+  hashPasswordResetToken,
+  PASSWORD_RESET_TOKEN_TTL_MS,
+} from "@/lib/auth/password-reset";
 import type {
   EventItem,
   Registration,
@@ -22,6 +27,7 @@ function mapEvent(record: {
   name: string;
   shortDescription: string;
   fullDescription: string;
+  bannerImageUrl: string | null;
   eventType: string;
   status: string;
   startDate: Date;
@@ -39,6 +45,7 @@ function mapEvent(record: {
     name: record.name,
     shortDescription: record.shortDescription,
     fullDescription: record.fullDescription,
+    bannerImageUrl: record.bannerImageUrl ?? undefined,
     eventType: record.eventType as EventItem["eventType"],
     status: record.status as EventItem["status"],
     startDate: formatDateOnly(record.startDate),
@@ -143,6 +150,7 @@ export async function createAdminEvent(input: {
   endDate: string;
   registrationDeadline: string;
   timezone: string;
+  bannerImageUrl?: string;
   place: string;
   captainName?: string;
   shortDescription?: string;
@@ -158,6 +166,7 @@ export async function createAdminEvent(input: {
       name: input.name,
       shortDescription: input.shortDescription?.trim() || input.name,
       fullDescription: input.fullDescription?.trim() || input.shortDescription?.trim() || input.name,
+      bannerImageUrl: input.bannerImageUrl?.trim() || null,
       eventType: input.eventType,
       status: input.status,
       startDate: new Date(input.startDate),
@@ -196,6 +205,7 @@ export async function updateAdminEvent(input: {
   endDate: string;
   registrationDeadline: string;
   timezone: string;
+  bannerImageUrl?: string;
   place: string;
   captainName?: string;
   shortDescription?: string;
@@ -218,10 +228,11 @@ export async function updateAdminEvent(input: {
   const updatedEvent = await prisma.event.update({
     where: { id: input.eventId },
     data: {
-      communityId: input.communityId,
+      community: { connect: { id: input.communityId } },
       name: input.name,
       shortDescription: input.shortDescription?.trim() || input.name,
       fullDescription: input.fullDescription?.trim() || input.shortDescription?.trim() || input.name,
+      bannerImageUrl: input.bannerImageUrl?.trim() || null,
       eventType: input.eventType,
       status: input.status,
       startDate: new Date(input.startDate),
@@ -494,6 +505,83 @@ export async function findVolunteerAccountByEmail(email: string) {
       email: email.toLowerCase(),
     },
   });
+}
+
+export async function issuePasswordResetToken(volunteerId: string) {
+  const token = createPasswordResetToken();
+  const tokenHash = hashPasswordResetToken(token);
+  const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_TTL_MS);
+
+  await prisma.passwordResetToken.deleteMany({
+    where: {
+      volunteerId,
+      OR: [{ usedAt: null }, { expiresAt: { lt: new Date() } }],
+    },
+  });
+
+  await prisma.passwordResetToken.create({
+    data: {
+      volunteerId,
+      tokenHash,
+      expiresAt,
+    },
+  });
+
+  return {
+    token,
+    expiresAt,
+  };
+}
+
+export async function isPasswordResetTokenValid(token: string) {
+  const tokenHash = hashPasswordResetToken(token);
+
+  const record = await prisma.passwordResetToken.findUnique({
+    where: { tokenHash },
+    select: { usedAt: true, expiresAt: true },
+  });
+
+  if (!record) {
+    return false;
+  }
+
+  if (record.usedAt) {
+    return false;
+  }
+
+  return record.expiresAt.getTime() > Date.now();
+}
+
+export async function resetVolunteerPasswordByToken(token: string, passwordHash: string) {
+  const tokenHash = hashPasswordResetToken(token);
+
+  const record = await prisma.passwordResetToken.findUnique({
+    where: { tokenHash },
+    select: { id: true, volunteerId: true, usedAt: true, expiresAt: true },
+  });
+
+  if (!record || record.usedAt || record.expiresAt.getTime() <= Date.now()) {
+    return false;
+  }
+
+  await prisma.$transaction([
+    prisma.volunteerAccount.update({
+      where: { id: record.volunteerId },
+      data: { passwordHash },
+    }),
+    prisma.passwordResetToken.update({
+      where: { id: record.id },
+      data: { usedAt: new Date() },
+    }),
+    prisma.passwordResetToken.deleteMany({
+      where: {
+        volunteerId: record.volunteerId,
+        id: { not: record.id },
+      },
+    }),
+  ]);
+
+  return true;
 }
 
 export async function getUserEventRegistrations(email: string): Promise<UserEventRegistration[]> {
