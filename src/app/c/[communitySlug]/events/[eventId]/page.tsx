@@ -19,12 +19,74 @@ function formatDateRange(startDate: string, endDate: string) {
   return `${formatter.format(new Date(startDate))} - ${formatter.format(new Date(endDate))}`;
 }
 
+const TIMEZONE_ALIASES: Record<string, string> = {
+  pdt: "America/Los_Angeles",
+  pst: "America/Los_Angeles",
+  mdt: "America/Denver",
+  mst: "America/Denver",
+  cdt: "America/Chicago",
+  cst: "America/Chicago",
+  edt: "America/New_York",
+  est: "America/New_York",
+};
+
+function isValidTimeZone(value: string) {
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function normalizeTimeZone(value: string) {
+  if (!value) {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  if (isValidTimeZone(trimmed)) {
+    return trimmed;
+  }
+
+  const normalized = trimmed
+    .replace(/\s*\/\s*/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
+  if (normalized.includes("los angeles") || normalized.includes("seattle")) {
+    return "America/Los_Angeles";
+  }
+  if (normalized.includes("denver")) {
+    return "America/Denver";
+  }
+  if (normalized.includes("chicago")) {
+    return "America/Chicago";
+  }
+  if (normalized.includes("new york")) {
+    return "America/New_York";
+  }
+  if (normalized.includes("kyiv") || normalized.includes("kiev")) {
+    return "Europe/Kyiv";
+  }
+
+  const tokenMatch = normalized.match(/\b([a-z]{3})\b/);
+  if (tokenMatch) {
+    return TIMEZONE_ALIASES[tokenMatch[1]];
+  }
+
+  return undefined;
+}
+
 function formatDateTime(value: string, timezone: string) {
-  return new Intl.DateTimeFormat("en", {
+  const safeTimeZone = normalizeTimeZone(timezone);
+  const formatter = new Intl.DateTimeFormat("en", {
     dateStyle: "medium",
     timeStyle: "short",
-    timeZone: timezone,
-  }).format(new Date(value));
+    ...(safeTimeZone ? { timeZone: safeTimeZone } : {}),
+  });
+
+  return formatter.format(new Date(value));
 }
 
 function eventTypeLabel(eventType: string) {
