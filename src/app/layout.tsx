@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   title: "UDS Events Module",
   description: "Multi-community events and registration platform",
   icons: {
-    icon: "/Logo_header.svg",
-    shortcut: "/Logo_header.svg",
-    apple: "/Logo_header.svg",
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+    apple: [{ url: "/apple-icon.svg", type: "image/svg+xml" }],
   },
 };
 
