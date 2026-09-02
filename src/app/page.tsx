@@ -1,5 +1,6 @@
 import { getUpcomingPublishedEventsByCommunitySlug } from "@/lib/domain/store";
 import Link from "next/link";
+import type { EventItem } from "@/lib/domain/types";
 
 export const dynamic = "force-dynamic";
 
@@ -7,13 +8,46 @@ const communities = [
   { slug: "uds", title: "UDS" },
 ];
 
-export default async function Home() {
+function sortByCalendarOrder(events: EventItem[]) {
+  return [...events].sort((a, b) => {
+    const startDiff = new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+    if (startDiff !== 0) {
+      return startDiff;
+    }
+
+    return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+  });
+}
+
+function matchesSearch(event: EventItem, query: string) {
+  if (!query) {
+    return true;
+  }
+
+  const haystack = [event.name, event.shortDescription, event.venueName, event.eventType].join(" ").toLowerCase();
+  return haystack.includes(query);
+}
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const params = await searchParams;
+  const query = (params.q ?? "").trim().toLowerCase();
+
   const eventGroups = await Promise.all(
     communities.map(async (community) => ({
       ...community,
-      events: await getUpcomingPublishedEventsByCommunitySlug(community.slug),
+      events: sortByCalendarOrder(await getUpcomingPublishedEventsByCommunitySlug(community.slug)),
     })),
   );
+
+  const filteredGroups = eventGroups.map((group) => ({
+    ...group,
+    events: group.events.filter((event) => matchesSearch(event, query)),
+  }));
+  const totalFilteredCount = filteredGroups.reduce((sum, group) => sum + group.events.length, 0);
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-12">
@@ -28,8 +62,33 @@ export default async function Home() {
         </p>
       </section>
 
+      <section className="mt-6 rounded-2xl border border-sky-200 bg-white p-4 shadow-sm">
+        <form className="flex flex-col gap-3 sm:flex-row sm:items-center" method="get" action="/">
+          <input
+            type="search"
+            name="q"
+            defaultValue={params.q ?? ""}
+            placeholder="Search events by name, location, type, or description"
+            className="w-full rounded-xl border border-sky-200 bg-white px-3 py-2 text-sm text-slate-900"
+          />
+          <div className="flex items-center gap-2">
+            <button type="submit" className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white">
+              Search
+            </button>
+            {query ? (
+              <Link href="/" className="rounded-full border border-sky-200 px-4 py-2 text-sm font-medium text-slate-700">
+                Clear
+              </Link>
+            ) : null}
+          </div>
+        </form>
+        <p className="mt-3 text-sm text-slate-600">
+          Showing {totalFilteredCount} event{totalFilteredCount === 1 ? "" : "s"} in calendar order.
+        </p>
+      </section>
+
       <section className="mt-8 space-y-8">
-        {eventGroups.map((group) => (
+        {filteredGroups.map((group) => (
           <div key={group.slug}>
             <div className="flex items-end justify-between gap-4">
               <div>
@@ -72,7 +131,7 @@ export default async function Home() {
                 ))
               ) : (
                 <div className="rounded-2xl border border-dashed border-sky-300 bg-sky-50 p-5 text-sm text-slate-600">
-                  No upcoming events right now.
+                  {query ? "No events match your search." : "No upcoming events right now."}
                 </div>
               )}
             </div>

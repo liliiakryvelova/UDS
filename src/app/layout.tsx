@@ -26,6 +26,11 @@ const brandDisplay = DM_Serif_Display({
 export const metadata: Metadata = {
   title: "UDS Events Module",
   description: "Multi-community events and registration platform",
+  icons: {
+    icon: "/Logo_header.svg",
+    shortcut: "/Logo_header.svg",
+    apple: "/Logo_header.svg",
+  },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

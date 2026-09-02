@@ -4,6 +4,8 @@ import {
   getEventById,
   getSlotsByEventId,
 } from "@/lib/domain/store";
+import { getAppOrigin } from "@/lib/auth/password-reset";
+import { sendEventRegistrationEmail } from "@/lib/notifications/event-registration-email";
 import { Prisma } from "@prisma/client";
 
 interface CreateRegistrationBody {
@@ -28,8 +30,17 @@ export async function POST(
 
   const payload = (await request.json()) as CreateRegistrationBody;
 
+  const fullName = String(payload.fullName ?? "").trim();
+  const email = String(payload.email ?? "").trim().toLowerCase();
+  const phone = String(payload.phone ?? "").trim();
+  const notes = payload.notes ? String(payload.notes).trim() : undefined;
+
   if (!payload.consentWaiverAccepted) {
     return Response.json({ error: "Consent is required" }, { status: 400 });
+  }
+
+  if (!fullName || !email || !phone || !payload.slotId) {
+    return Response.json({ error: "Missing required registration fields" }, { status: 400 });
   }
 
   const slot = (await getSlotsByEventId(eventId)).find((record) => record.id === payload.slotId);
@@ -49,11 +60,27 @@ export async function POST(
       eventId,
       slotId: payload.slotId,
       communityId: event.communityId,
-      fullName: payload.fullName,
-      email: payload.email,
-      phone: payload.phone,
-      notes: payload.notes,
+      fullName,
+      email,
+      phone,
+      notes,
       consentWaiverAccepted: payload.consentWaiverAccepted,
+    });
+
+    const appOrigin = getAppOrigin(request);
+    const manageUrl = `${appOrigin}/registrations/manage/${result.manageToken}`;
+    const shiftLabel = `${slot.slotDate} | ${slot.startTime}-${slot.endTime} | ${slot.roleName}`;
+
+    await sendEventRegistrationEmail({
+      to: email,
+      fullName,
+      eventName: event.name,
+      eventDateRange: `${event.startDate} - ${event.endDate}`,
+      timezone: event.timezone,
+      venueName: event.venueName,
+      shiftLabel,
+      notes,
+      manageUrl,
     });
 
     return Response.json({

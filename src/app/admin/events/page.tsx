@@ -5,9 +5,87 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminEventsPage() {
+type AdminEventView = "all" | "upcoming" | "ongoing" | "past" | "closed";
+
+const ADMIN_EVENT_VIEWS: Array<{ key: AdminEventView; label: string }> = [
+  { key: "all", label: "All" },
+  { key: "upcoming", label: "Upcoming" },
+  { key: "ongoing", label: "Ongoing" },
+  { key: "past", label: "Past" },
+  { key: "closed", label: "Completed / Cancelled" },
+];
+
+function parseDateOnly(value: string) {
+  return new Date(`${value}T00:00:00.000Z`);
+}
+
+function isClosedStatus(status: string) {
+  return status === "completed" || status === "cancelled";
+}
+
+function filterEventsByView(
+  events: Awaited<ReturnType<typeof getAdminEvents>>,
+  view: AdminEventView,
+  today: Date,
+) {
+  return events.filter((event) => {
+    if (view === "all") {
+      return true;
+    }
+
+    if (view === "closed") {
+      return isClosedStatus(event.status);
+    }
+
+    const startDate = parseDateOnly(event.startDate);
+    const endDate = parseDateOnly(event.endDate);
+    const isClosed = isClosedStatus(event.status);
+
+    if (isClosed) {
+      return false;
+    }
+
+    if (view === "upcoming") {
+      return startDate > today;
+    }
+
+    if (view === "ongoing") {
+      return startDate <= today && endDate >= today;
+    }
+
+    if (view === "past") {
+      return endDate < today;
+    }
+
+    return true;
+  });
+}
+
+export default async function AdminEventsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
   await ensureAdminPageSession("/admin/events");
+  const params = await searchParams;
   const events = await getAdminEvents();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const requestedView = params.view;
+  const activeView = ADMIN_EVENT_VIEWS.some((view) => view.key === requestedView)
+    ? (requestedView as AdminEventView)
+    : "all";
+
+  const eventsByView = {
+    all: filterEventsByView(events, "all", today),
+    upcoming: filterEventsByView(events, "upcoming", today),
+    ongoing: filterEventsByView(events, "ongoing", today),
+    past: filterEventsByView(events, "past", today),
+    closed: filterEventsByView(events, "closed", today),
+  };
+
+  const visibleEvents = eventsByView[activeView];
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-12">
@@ -27,8 +105,30 @@ export default async function AdminEventsPage() {
 
       <AdminEventForm />
 
+      <section className="mt-8 rounded-2xl border border-sky-200 bg-white/90 p-4 shadow-sm">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Event views</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {ADMIN_EVENT_VIEWS.map((view) => {
+            const isActive = activeView === view.key;
+            return (
+              <Link
+                key={view.key}
+                href={view.key === "all" ? "/admin/events" : `/admin/events?view=${view.key}`}
+                className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  isActive
+                    ? "bg-sky-800 text-white"
+                    : "bg-sky-50 text-sky-800 ring-1 ring-sky-200 hover:bg-sky-100"
+                }`}
+              >
+                {view.label} ({eventsByView[view.key].length})
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
       <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {events.map((event) => (
+        {visibleEvents.map((event) => (
           <Link
             key={event.id}
             href={`/admin/events/${event.id}`}
@@ -55,6 +155,12 @@ export default async function AdminEventsPage() {
           </Link>
         ))}
       </div>
+
+      {visibleEvents.length === 0 ? (
+        <p className="mt-6 rounded-2xl border border-dashed border-sky-200 bg-sky-50/40 px-4 py-3 text-sm text-slate-600">
+          No events found in this view.
+        </p>
+      ) : null}
     </main>
   );
 }

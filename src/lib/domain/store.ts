@@ -130,7 +130,7 @@ export async function getUpcomingPublishedEventsByCommunitySlug(slug: string): P
       status: "published",
       startDate: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
     },
-    orderBy: [{ startDate: "asc" }],
+    orderBy: [{ startDate: "asc" }, { endDate: "asc" }],
   });
 
   return records.map(mapEvent);
@@ -585,11 +585,14 @@ export async function resetVolunteerPasswordByToken(token: string, passwordHash:
 }
 
 export async function getUserEventRegistrations(email: string): Promise<UserEventRegistration[]> {
+  const normalizedEmail = email.trim().toLowerCase();
+
   const records = await prisma.registration.findMany({
     where: {
-      email: { equals: email, mode: "insensitive" },
+      email: { contains: normalizedEmail, mode: "insensitive" },
+      status: { in: ["confirmed", "waitlisted", "checked_in"] },
     },
-    orderBy: [{ event: { startDate: "asc" } }, { createdAt: "desc" }],
+    orderBy: [{ event: { startDate: "asc" } }, { slot: { slotDate: "asc" } }, { createdAt: "desc" }],
     include: {
       event: {
         include: {
@@ -602,7 +605,9 @@ export async function getUserEventRegistrations(email: string): Promise<UserEven
     },
   });
 
-  return records.map((record) => ({
+  const exactMatches = records.filter((record) => record.email.trim().toLowerCase() === normalizedEmail);
+
+  return exactMatches.map((record) => ({
     registrationId: record.id,
     registrationStatus: record.status as UserEventRegistration["registrationStatus"],
     fullName: record.fullName,
