@@ -1,5 +1,4 @@
 import {
-  countConfirmedRegistrationsForSlot,
   createRegistration,
   getEventById,
   getSlotsByEventId,
@@ -49,12 +48,6 @@ export async function POST(
     return Response.json({ error: "Slot not found" }, { status: 404 });
   }
 
-  const confirmedCount = await countConfirmedRegistrationsForSlot(slot.id);
-
-  if (confirmedCount >= slot.peopleNeeded) {
-    return Response.json({ error: "Slot is full" }, { status: 409 });
-  }
-
   try {
     const result = await createRegistration({
       eventId,
@@ -81,19 +74,24 @@ export async function POST(
       shiftLabel,
       notes,
       manageUrl,
+      registrationStatus: result.registration.status,
     });
 
     return Response.json({
       registration: result.registration,
       manageUrl: `/registrations/manage/${result.manageToken}`,
+      waitlisted: result.registration.status === "waitlisted",
     });
   } catch (error) {
     if (error instanceof Error && error.message === "SLOT_NOT_FOUND") {
       return Response.json({ error: "Slot not found" }, { status: 404 });
     }
 
-    if (error instanceof Error && error.message === "SLOT_FULL") {
-      return Response.json({ error: "Slot is full" }, { status: 409 });
+    if (error instanceof Error && error.message === "ALREADY_REGISTERED") {
+      return Response.json(
+        { error: "You already have an active registration for this shift." },
+        { status: 409 },
+      );
     }
 
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {

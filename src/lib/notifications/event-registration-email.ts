@@ -9,6 +9,7 @@ interface EventRegistrationEmailInput {
   shiftLabel: string;
   notes?: string;
   manageUrl: string;
+  registrationStatus?: "confirmed" | "waitlisted" | "checked_in" | "cancelled";
 }
 
 function hasEmailProviderConfigured() {
@@ -21,15 +22,22 @@ export async function sendEventRegistrationEmail(input: EventRegistrationEmailIn
     return;
   }
 
+  const isWaitlisted = input.registrationStatus === "waitlisted";
+  const subjectPrefix = isWaitlisted ? "You are on the waitlist" : "You are signed up";
+  const headline = isWaitlisted ? "Added to waitlist" : "Event registration confirmed";
+  const intro = isWaitlisted
+    ? "The selected shift is currently full, so you were added to the waitlist."
+    : "Your registration has been confirmed. Here are your event details:";
+
   const payload = {
     from: process.env.RESET_FROM_EMAIL,
     to: [input.to],
-    subject: `You are signed up: ${input.eventName}`,
+    subject: `${subjectPrefix}: ${input.eventName}`,
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #0f172a;">
-        <h2 style="margin-bottom: 12px;">Event registration confirmed</h2>
+        <h2 style="margin-bottom: 12px;">${headline}</h2>
         <p>Hello ${input.fullName || "volunteer"},</p>
-        <p>Your registration has been confirmed. Here are your event details:</p>
+        <p>${intro}</p>
         <ul style="padding-left: 20px;">
           <li><strong>Event:</strong> ${input.eventName}</li>
           <li><strong>Community:</strong> ${input.communityName || "UDS"}</li>
@@ -37,6 +45,7 @@ export async function sendEventRegistrationEmail(input: EventRegistrationEmailIn
           <li><strong>Timezone:</strong> ${input.timezone}</li>
           <li><strong>Location:</strong> ${input.venueName}</li>
           <li><strong>Shift:</strong> ${input.shiftLabel}</li>
+          <li><strong>Status:</strong> ${input.registrationStatus || "confirmed"}</li>
           ${input.notes ? `<li><strong>Notes:</strong> ${input.notes}</li>` : ""}
         </ul>
         <p>

@@ -411,6 +411,7 @@ export async function createRegistration(input: {
 }) {
   const manageToken = randomUUID();
   const manageTokenHash = hashManageToken(manageToken);
+  const normalizedEmail = input.email.trim().toLowerCase();
 
   const registration = await prisma.$transaction(async (tx) => {
     const slot = await tx.eventSlot.findUnique({ where: { id: input.slotId } });
@@ -419,13 +420,23 @@ export async function createRegistration(input: {
       throw new Error("SLOT_NOT_FOUND");
     }
 
+    const existingActiveRegistration = await tx.registration.findFirst({
+      where: {
+        slotId: input.slotId,
+        email: { equals: normalizedEmail, mode: "insensitive" },
+        status: { in: ["confirmed", "waitlisted", "checked_in"] },
+      },
+    });
+
+    if (existingActiveRegistration) {
+      throw new Error("ALREADY_REGISTERED");
+    }
+
     const confirmedCount = await tx.registration.count({
       where: { slotId: input.slotId, status: "confirmed" },
     });
 
-    if (confirmedCount >= slot.peopleNeeded) {
-      throw new Error("SLOT_FULL");
-    }
+    const nextStatus = confirmedCount >= slot.peopleNeeded ? "waitlisted" : "confirmed";
 
     return tx.registration.create({
       data: {
@@ -433,11 +444,11 @@ export async function createRegistration(input: {
         slotId: input.slotId,
         communityId: input.communityId,
         fullName: input.fullName,
-        email: input.email,
+        email: normalizedEmail,
         phone: input.phone,
         notes: input.notes,
         consentWaiverAccepted: input.consentWaiverAccepted,
-        status: "confirmed",
+        status: nextStatus,
         manageTokenHash,
       },
     });

@@ -129,6 +129,9 @@ export default async function EventDetailsPage({
     getRegistrationsByEventId(event.id),
   ]);
   const confirmedRegistrations = registrations.filter((registration) => registration.status === "confirmed");
+  const activeRegistrations = registrations.filter((registration) =>
+    ["confirmed", "waitlisted", "checked_in"].includes(registration.status),
+  );
   const slotConfirmedCountById = confirmedRegistrations.reduce<Record<string, number>>((acc, registration) => {
     acc[registration.slotId] = (acc[registration.slotId] ?? 0) + 1;
     return acc;
@@ -136,10 +139,16 @@ export default async function EventDetailsPage({
 
   const normalizedSignedInEmail = userSession?.email.trim().toLowerCase();
   const isPublicVisitor = !isAdminLoggedIn && !userSession;
-  const userRegisteredSlotIds = confirmedRegistrations
-    .filter((registration) => normalizedSignedInEmail && registration.email.trim().toLowerCase() === normalizedSignedInEmail)
-    .map((registration) => registration.slotId);
-  const uniqueUserRegisteredSlotIds = [...new Set(userRegisteredSlotIds)];
+  const userRegistrationStatusBySlotId = activeRegistrations.reduce<Record<string, "confirmed" | "waitlisted" | "checked_in">>(
+    (acc, registration) => {
+      if (normalizedSignedInEmail && registration.email.trim().toLowerCase() === normalizedSignedInEmail) {
+        acc[registration.slotId] = registration.status as "confirmed" | "waitlisted" | "checked_in";
+      }
+
+      return acc;
+    },
+    {},
+  );
 
   const volunteerListItems = confirmedRegistrations.map((registration) => {
     const isCurrentUser = Boolean(
@@ -289,7 +298,7 @@ export default async function EventDetailsPage({
         eventId={event.id}
         slots={eventSlots}
         slotConfirmedCountById={slotConfirmedCountById}
-        userRegisteredSlotIds={uniqueUserRegisteredSlotIds}
+        userRegistrationStatusBySlotId={userRegistrationStatusBySlotId}
         signedInVolunteer={
           userSession
             ? {

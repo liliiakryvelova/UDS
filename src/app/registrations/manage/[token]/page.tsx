@@ -18,12 +18,15 @@ export default async function ManageRegistrationPage({
   const slots = event ? await getSlotsByEventId(event.id) : [];
   const community = event ? await getCommunityById(event.communityId) : undefined;
   const assignedSlot = slots.find((slot) => slot.id === registration?.slotId);
+  const isWaitlisted = registration?.status === "waitlisted";
 
   return (
     <main className="mx-auto w-full max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold tracking-tight">Registration confirmed</h1>
+      <h1 className="text-3xl font-bold tracking-tight">{isWaitlisted ? "Waitlist confirmed" : "Registration confirmed"}</h1>
       <p className="mt-2 text-sm text-slate-600">
-        Your volunteer signup is saved. You can review the details below and return to the event anytime.
+        {isWaitlisted
+          ? "Your waitlist entry is saved. We will contact you if a volunteer spot opens."
+          : "Your volunteer signup is saved. You can review the details below and return to the event anytime."}
       </p>
 
       <section className="mt-6 rounded-3xl border border-sky-200 bg-sky-50 p-6 shadow-sm">

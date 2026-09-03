@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ShiftRoleSlot } from "@/lib/domain/types";
 
+type ActiveRegistrationStatus = "confirmed" | "waitlisted" | "checked_in";
+
 interface SignedInVolunteer {
   fullName: string;
   email: string;
@@ -14,7 +16,7 @@ interface EventSignupFormProps {
   eventId: string;
   slots: ShiftRoleSlot[];
   slotConfirmedCountById: Record<string, number>;
-  userRegisteredSlotIds?: string[];
+  userRegistrationStatusBySlotId?: Record<string, ActiveRegistrationStatus>;
   signedInVolunteer?: SignedInVolunteer | null;
 }
 
@@ -22,7 +24,7 @@ export default function EventSignupForm({
   eventId,
   slots,
   slotConfirmedCountById,
-  userRegisteredSlotIds = [],
+  userRegistrationStatusBySlotId = {},
   signedInVolunteer,
 }: EventSignupFormProps) {
   const router = useRouter();
@@ -31,17 +33,21 @@ export default function EventSignupForm({
   const [selectedSlotId, setSelectedSlotId] = useState("");
   const hasSlots = slots.length > 0;
   const isSignedInMode = Boolean(signedInVolunteer);
-  const userRegisteredSet = new Set(userRegisteredSlotIds);
 
   const slotsWithStatus = slots.map((slot) => {
     const confirmedCount = slotConfirmedCountById[slot.id] ?? 0;
     const isFull = confirmedCount >= slot.peopleNeeded;
-    const isRegisteredByUser = userRegisteredSet.has(slot.id);
-    return { ...slot, confirmedCount, isFull, isRegisteredByUser };
+    const userStatus = userRegistrationStatusBySlotId[slot.id];
+    const isRegisteredByUser = Boolean(userStatus);
+    return { ...slot, confirmedCount, isFull, userStatus, isRegisteredByUser };
   });
 
-  const selectableSlots = slotsWithStatus.filter((slot) => !slot.isFull && !slot.isRegisteredByUser);
-  const hasOpenSlots = selectableSlots.length > 0;
+  const selectableSlots = slotsWithStatus.filter((slot) => !slot.isRegisteredByUser);
+  const hasSelectableSlots = selectableSlots.length > 0;
+  const selectedSlotWithStatus = selectedSlotId
+    ? slotsWithStatus.find((slot) => slot.id === selectedSlotId)
+    : undefined;
+  const isSelectedSlotWaitlist = Boolean(selectedSlotWithStatus?.isFull && !selectedSlotWithStatus?.isRegisteredByUser);
 
   async function onSubmit(formData: FormData) {
     const slotId = String(formData.get("slotId") ?? "");
@@ -54,11 +60,6 @@ export default function EventSignupForm({
 
     if (selectedSlot.isRegisteredByUser) {
       setStatus("You are already signed up for this shift.");
-      return;
-    }
-
-    if (selectedSlot.isFull) {
-      setStatus("This shift is full.");
       return;
     }
 
@@ -81,11 +82,11 @@ export default function EventSignupForm({
     });
 
     const responseText = await response.text();
-    let body: { error?: string; manageUrl?: string } = {};
+    let body: { error?: string; manageUrl?: string; waitlisted?: boolean } = {};
 
     if (responseText) {
       try {
-        body = JSON.parse(responseText) as { error?: string; manageUrl?: string };
+        body = JSON.parse(responseText) as { error?: string; manageUrl?: string; waitlisted?: boolean };
       } catch {
         body = {};
       }
@@ -103,7 +104,7 @@ export default function EventSignupForm({
       return;
     }
 
-    setStatus("Registration complete.");
+    setStatus(body.waitlisted ? "You were added to the waitlist." : "Registration complete.");
   }
 
   return (
@@ -134,9 +135,13 @@ export default function EventSignupForm({
           >
             <option value="">Select shift</option>
             {slotsWithStatus.map((slot) => (
-              <option key={slot.id} value={slot.id} disabled={slot.isFull || slot.isRegisteredByUser}>
+              <option key={slot.id} value={slot.id} disabled={slot.isRegisteredByUser}>
                 {slot.slotDate} | {slot.startTime}-{slot.endTime} | {slot.roleName}
-                {slot.isRegisteredByUser ? " (Already registered)" : slot.isFull ? " (Full)" : ""}
+                {slot.isRegisteredByUser
+                  ? ` (${slot.userStatus === "waitlisted" ? "Already waitlisted" : "Already registered"})`
+                  : slot.isFull
+                    ? " (Full - join waitlist)"
+                    : ""}
               </option>
             ))}
           </select>
@@ -181,22 +186,25 @@ export default function EventSignupForm({
 
         {!hasSlots ? (
           <p className="text-sm text-slate-600">Volunteer sign-up will open once shifts are added.</p>
-        ) : !hasOpenSlots ? (
-          <p className="text-sm text-rose-700">All available shifts are full right now.</p>
+        ) : !hasSelectableSlots ? (
+          <p className="text-sm text-rose-700">You already have an active registration for every shift in this event.</p>
+        ) : isSelectedSlotWaitlist ? (
+          <p className="text-sm text-amber-700">This shift is full. You can still join the waitlist.</p>
         ) : null}
 
-        {isSignedInMode && userRegisteredSlotIds.length > 0 ? (
+        {isSignedInMode && Object.keys(userRegistrationStatusBySlotId).length > 0 ? (
           <p className="text-sm text-emerald-700">
-            You are already registered for {userRegisteredSlotIds.length} shift{userRegisteredSlotIds.length === 1 ? "" : "s"} in this event.
+            You already have active registrations for {Object.keys(userRegistrationStatusBySlotId).length} shift
+            {Object.keys(userRegistrationStatusBySlotId).length === 1 ? "" : "s"} in this event.
           </p>
         ) : null}
 
         <button
           type="submit"
-          disabled={isSaving || !hasOpenSlots}
+          disabled={isSaving || !hasSelectableSlots}
           className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
-          {isSaving ? "Submitting..." : isSignedInMode ? "Sign Me Up" : "Register"}
+          {isSaving ? "Submitting..." : isSelectedSlotWaitlist ? "Join Waitlist" : isSignedInMode ? "Sign Me Up" : "Register"}
         </button>
 
         {status ? <p className="text-sm text-slate-700">{status}</p> : null}
