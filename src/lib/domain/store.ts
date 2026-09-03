@@ -358,6 +358,33 @@ export async function cancelRegistrationById(registrationId: string) {
   return mapRegistration(cancelled);
 }
 
+export async function cancelRegistrationByIdForUser(registrationId: string, email: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const existing = await prisma.registration.findUnique({ where: { id: registrationId } });
+
+  if (!existing) {
+    return { ok: false as const, reason: "not_found" as const };
+  }
+
+  if (existing.email.trim().toLowerCase() !== normalizedEmail) {
+    return { ok: false as const, reason: "forbidden" as const };
+  }
+
+  if (existing.status === "cancelled") {
+    return { ok: true as const, registration: mapRegistration(existing) };
+  }
+
+  const cancelled = await prisma.registration.update({
+    where: { id: registrationId },
+    data: {
+      status: "cancelled",
+      cancelledAt: new Date(),
+    },
+  });
+
+  return { ok: true as const, registration: mapRegistration(cancelled) };
+}
+
 export async function countConfirmedRegistrationsForSlot(slotId: string): Promise<number> {
   return prisma.registration.count({
     where: { slotId, status: "confirmed" },

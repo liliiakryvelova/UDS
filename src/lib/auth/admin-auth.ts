@@ -14,7 +14,7 @@ function signPayload(payload: string) {
 export function getAdminCredentials() {
   return {
     email: process.env.ADMIN_EMAIL ?? "admin@uds.local",
-    password: process.env.ADMIN_PASSWORD ?? "change-me",
+    password: process.env.ADMIN_PASSWORD ?? "admin",
   };
 }
 

@@ -12,9 +12,14 @@ function formatDateRange(startDate: string, endDate: string) {
   return `${startDate} - ${endDate}`;
 }
 
-export default async function MyEventsPage() {
+export default async function MyEventsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ cancelled?: string; error?: string }>;
+}) {
   await ensureUserPageSession("/my-events");
   const session = await getUserSessionIdentity();
+  const params = await searchParams;
 
   if (!session) {
     return null;
@@ -29,6 +34,15 @@ export default async function MyEventsPage() {
         <h1 className="mt-1 text-3xl font-bold tracking-tight">My Events</h1>
         <p className="mt-2 text-sm text-slate-600">All events where you are signed up with this account.</p>
         <p className="mt-1 text-sm text-slate-700">Signed in as {session.fullName}</p>
+        {params.cancelled === "1" ? (
+          <p className="mt-2 text-sm font-medium text-emerald-700">Registration cancelled successfully.</p>
+        ) : null}
+        {params.error === "forbidden" ? (
+          <p className="mt-2 text-sm font-medium text-rose-700">You can only cancel your own registration.</p>
+        ) : null}
+        {params.error === "missing" ? (
+          <p className="mt-2 text-sm font-medium text-rose-700">Registration not found.</p>
+        ) : null}
       </section>
 
       <section className="mt-6 grid auto-rows-fr items-stretch justify-items-center gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -50,12 +64,22 @@ export default async function MyEventsPage() {
                 Shift: {registration.slotDate} | {registration.slotStartTime}-{registration.slotEndTime} | {registration.slotRoleName}
               </p>
 
-              <Link
-                href={`/c/${registration.communitySlug}/events/${registration.eventId}`}
-                className="mt-auto inline-flex self-center rounded-full border border-sky-300 bg-white px-4 py-2 text-sm font-medium text-slate-700"
-              >
-                Open Event
-              </Link>
+              <div className="mt-auto flex flex-wrap justify-center gap-2">
+                <Link
+                  href={`/c/${registration.communitySlug}/events/${registration.eventId}`}
+                  className="inline-flex rounded-full border border-sky-300 bg-white px-4 py-2 text-sm font-medium text-slate-700"
+                >
+                  Open Event
+                </Link>
+                <form action={`/api/user/registrations/${registration.registrationId}/cancel`} method="post">
+                  <button
+                    type="submit"
+                    className="inline-flex rounded-full border border-rose-200 bg-white px-4 py-2 text-sm font-medium text-rose-700"
+                  >
+                    Cancel Registration
+                  </button>
+                </form>
+              </div>
             </article>
           ))
         ) : (

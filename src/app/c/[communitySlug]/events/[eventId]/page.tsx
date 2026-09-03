@@ -93,6 +93,23 @@ function eventTypeLabel(eventType: string) {
   return eventType.charAt(0).toUpperCase() + eventType.slice(1);
 }
 
+function maskVolunteerName(fullName: string) {
+  const parts = fullName
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (parts.length === 0) {
+    return "Volunteer";
+  }
+
+  if (parts.length === 1) {
+    return parts[0];
+  }
+
+  return `${parts[0]} ${parts[1][0]}.`;
+}
+
 export default async function EventDetailsPage({
   params,
 }: {
@@ -112,6 +129,30 @@ export default async function EventDetailsPage({
     getRegistrationsByEventId(event.id),
   ]);
   const confirmedRegistrations = registrations.filter((registration) => registration.status === "confirmed");
+  const slotConfirmedCountById = confirmedRegistrations.reduce<Record<string, number>>((acc, registration) => {
+    acc[registration.slotId] = (acc[registration.slotId] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  const normalizedSignedInEmail = userSession?.email.trim().toLowerCase();
+  const isPublicVisitor = !isAdminLoggedIn && !userSession;
+  const userRegisteredSlotIds = confirmedRegistrations
+    .filter((registration) => normalizedSignedInEmail && registration.email.trim().toLowerCase() === normalizedSignedInEmail)
+    .map((registration) => registration.slotId);
+  const uniqueUserRegisteredSlotIds = [...new Set(userRegisteredSlotIds)];
+
+  const volunteerListItems = confirmedRegistrations.map((registration) => {
+    const isCurrentUser = Boolean(
+      normalizedSignedInEmail && registration.email.trim().toLowerCase() === normalizedSignedInEmail,
+    );
+
+    return {
+      id: registration.id,
+      slotId: registration.slotId,
+      displayName: isPublicVisitor && !isCurrentUser ? maskVolunteerName(registration.fullName) : registration.fullName,
+      isCurrentUser,
+    };
+  });
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-12">
@@ -197,6 +238,12 @@ export default async function EventDetailsPage({
             {eventSlots.length > 0 ? (
               eventSlots.map((slot) => (
                 <div key={slot.id} className="rounded-xl border border-sky-200 bg-white p-4">
+                  {(() => {
+                    const confirmedCount = slotConfirmedCountById[slot.id] ?? 0;
+                    const isFull = confirmedCount >= slot.peopleNeeded;
+
+                    return (
+                      <>
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-slate-900">
@@ -204,12 +251,23 @@ export default async function EventDetailsPage({
                       </p>
                       <p className="mt-1 text-sm text-slate-700">{slot.roleName}</p>
                     </div>
-                    <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 ring-1 ring-sky-100">
-                      Need {slot.peopleNeeded}
-                    </span>
+                    <div className="flex flex-col items-end gap-2 text-right">
+                      <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 ring-1 ring-sky-100">
+                        Need {slot.peopleNeeded}
+                      </span>
+                      <span className="text-xs text-slate-600">{confirmedCount} signed up</span>
+                      {isFull ? (
+                        <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-rose-700 ring-1 ring-rose-200">
+                          Full
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                   {slot.meetingPoint ? <p className="mt-3 text-xs text-slate-500">Meet at {slot.meetingPoint}</p> : null}
                   {slot.instructions ? <p className="mt-1 text-xs text-slate-500">{slot.instructions}</p> : null}
+                      </>
+                    );
+                  })()}
                 </div>
               ))
             ) : (
@@ -222,7 +280,7 @@ export default async function EventDetailsPage({
       </section>
 
       <EventVolunteerList
-        registrations={confirmedRegistrations}
+        registrations={volunteerListItems}
         slots={eventSlots}
         isAdminLoggedIn={isAdminLoggedIn}
       />
@@ -230,6 +288,8 @@ export default async function EventDetailsPage({
       <EventSignupForm
         eventId={event.id}
         slots={eventSlots}
+        slotConfirmedCountById={slotConfirmedCountById}
+        userRegisteredSlotIds={uniqueUserRegisteredSlotIds}
         signedInVolunteer={
           userSession
             ? {

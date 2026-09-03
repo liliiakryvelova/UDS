@@ -1,10 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import type { Registration, ShiftRoleSlot } from "@/lib/domain/types";
+import type { ShiftRoleSlot } from "@/lib/domain/types";
+
+interface VolunteerListItem {
+  id: string;
+  slotId: string;
+  displayName: string;
+  isCurrentUser: boolean;
+}
 
 interface EventVolunteerListProps {
-  registrations: Registration[];
+  registrations: VolunteerListItem[];
   slots: ShiftRoleSlot[];
   isAdminLoggedIn: boolean;
 }
@@ -43,7 +50,7 @@ export default function EventVolunteerList({ registrations, slots, isAdminLogged
       return;
     }
 
-    const removed = (await response.json()) as Registration;
+    const removed = (await response.json()) as { id: string };
     setItems((current) => current.filter((registration) => registration.id !== removed.id));
     setBusyId(null);
     setStatus("Volunteer removed.");
@@ -71,7 +78,14 @@ export default function EventVolunteerList({ registrations, slots, isAdminLogged
 
             return (
               <article key={registration.id} className="rounded-xl border border-sky-200 bg-white p-4">
-                <p className="text-base font-semibold text-slate-950">{registration.fullName}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-base font-semibold text-slate-950">{registration.displayName}</p>
+                  {registration.isCurrentUser ? (
+                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-700 ring-1 ring-emerald-200">
+                      You
+                    </span>
+                  ) : null}
+                </div>
                 <p className="mt-1 text-sm text-slate-700">{slotLabel(slot)}</p>
 
                 {isAdminLoggedIn ? (

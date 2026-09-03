@@ -13,22 +13,60 @@ interface SignedInVolunteer {
 interface EventSignupFormProps {
   eventId: string;
   slots: ShiftRoleSlot[];
+  slotConfirmedCountById: Record<string, number>;
+  userRegisteredSlotIds?: string[];
   signedInVolunteer?: SignedInVolunteer | null;
 }
 
-export default function EventSignupForm({ eventId, slots, signedInVolunteer }: EventSignupFormProps) {
+export default function EventSignupForm({
+  eventId,
+  slots,
+  slotConfirmedCountById,
+  userRegisteredSlotIds = [],
+  signedInVolunteer,
+}: EventSignupFormProps) {
   const router = useRouter();
   const [status, setStatus] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedSlotId, setSelectedSlotId] = useState("");
   const hasSlots = slots.length > 0;
   const isSignedInMode = Boolean(signedInVolunteer);
+  const userRegisteredSet = new Set(userRegisteredSlotIds);
+
+  const slotsWithStatus = slots.map((slot) => {
+    const confirmedCount = slotConfirmedCountById[slot.id] ?? 0;
+    const isFull = confirmedCount >= slot.peopleNeeded;
+    const isRegisteredByUser = userRegisteredSet.has(slot.id);
+    return { ...slot, confirmedCount, isFull, isRegisteredByUser };
+  });
+
+  const selectableSlots = slotsWithStatus.filter((slot) => !slot.isFull && !slot.isRegisteredByUser);
+  const hasOpenSlots = selectableSlots.length > 0;
 
   async function onSubmit(formData: FormData) {
+    const slotId = String(formData.get("slotId") ?? "");
+    const selectedSlot = slotsWithStatus.find((slot) => slot.id === slotId);
+
+    if (!selectedSlot) {
+      setStatus("Please choose a valid shift.");
+      return;
+    }
+
+    if (selectedSlot.isRegisteredByUser) {
+      setStatus("You are already signed up for this shift.");
+      return;
+    }
+
+    if (selectedSlot.isFull) {
+      setStatus("This shift is full.");
+      return;
+    }
+
     setIsSaving(true);
     setStatus("");
 
     const payload = {
-      slotId: String(formData.get("slotId") ?? ""),
+      slotId,
       fullName: String(formData.get("fullName") ?? signedInVolunteer?.fullName ?? ""),
       email: String(formData.get("email") ?? signedInVolunteer?.email ?? ""),
       phone: String(formData.get("phone") ?? signedInVolunteer?.phone ?? ""),
@@ -86,11 +124,19 @@ export default function EventSignupForm({ eventId, slots, signedInVolunteer }: E
       >
         <label className="block text-sm text-slate-700">
           Shift and role
-          <select name="slotId" required disabled={!hasSlots} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2 disabled:bg-slate-100">
+          <select
+            name="slotId"
+            required
+            disabled={!hasSlots}
+            value={selectedSlotId}
+            onChange={(event) => setSelectedSlotId(event.target.value)}
+            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2 disabled:bg-slate-100"
+          >
             <option value="">Select shift</option>
-            {slots.map((slot) => (
-              <option key={slot.id} value={slot.id}>
+            {slotsWithStatus.map((slot) => (
+              <option key={slot.id} value={slot.id} disabled={slot.isFull || slot.isRegisteredByUser}>
                 {slot.slotDate} | {slot.startTime}-{slot.endTime} | {slot.roleName}
+                {slot.isRegisteredByUser ? " (Already registered)" : slot.isFull ? " (Full)" : ""}
               </option>
             ))}
           </select>
@@ -135,11 +181,19 @@ export default function EventSignupForm({ eventId, slots, signedInVolunteer }: E
 
         {!hasSlots ? (
           <p className="text-sm text-slate-600">Volunteer sign-up will open once shifts are added.</p>
+        ) : !hasOpenSlots ? (
+          <p className="text-sm text-rose-700">All available shifts are full right now.</p>
+        ) : null}
+
+        {isSignedInMode && userRegisteredSlotIds.length > 0 ? (
+          <p className="text-sm text-emerald-700">
+            You are already registered for {userRegisteredSlotIds.length} shift{userRegisteredSlotIds.length === 1 ? "" : "s"} in this event.
+          </p>
         ) : null}
 
         <button
           type="submit"
-          disabled={isSaving || !hasSlots}
+          disabled={isSaving || !hasOpenSlots}
           className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
           {isSaving ? "Submitting..." : isSignedInMode ? "Sign Me Up" : "Register"}
