@@ -4,13 +4,14 @@ import {
   USER_SESSION_COOKIE,
   verifyUserPassword,
 } from "@/lib/auth/user-auth";
+import { sanitizeNextPath } from "@/lib/auth/google-oauth";
 import { findVolunteerAccountByEmail } from "@/lib/domain/store";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/my-events");
+  const next = sanitizeNextPath(String(formData.get("next") ?? "/my-events"));
 
   const volunteer = await findVolunteerAccountByEmail(email);
 

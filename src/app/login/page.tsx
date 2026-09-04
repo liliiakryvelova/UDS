@@ -9,6 +9,16 @@ export default async function UserLoginPage({
   const hasError = params.error === "1";
   const wasReset = params.reset === "1";
   const next = params.next ?? "/my-events";
+  const googleError =
+    params.error === "google"
+      ? "Google sign-in failed. Please try again."
+      : params.error === "google_config"
+        ? "Google sign-in is not configured yet."
+        : params.error === "google_state"
+          ? "Google sign-in session expired. Please try again."
+          : params.error === "google_email"
+            ? "Google account email must be verified."
+            : "";
 
   return (
     <main className="mx-auto w-full max-w-md px-6 py-16">
@@ -61,12 +71,21 @@ export default async function UserLoginPage({
           <p className="text-sm text-emerald-700">Password updated successfully. Sign in with your new password.</p>
         ) : null}
 
+        {googleError ? <p className="text-sm text-red-600">{googleError}</p> : null}
+
         <button
           type="submit"
           className="w-full rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white"
         >
           Sign In
         </button>
+
+        <a
+          href={`/api/user/google/start?next=${encodeURIComponent(next)}`}
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800"
+        >
+          Continue with Google
+        </a>
 
         <p className="text-center text-xs text-slate-600">
           New here?{" "}

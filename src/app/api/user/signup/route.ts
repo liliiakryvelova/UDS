@@ -5,6 +5,7 @@ import {
   hashUserPassword,
   USER_SESSION_COOKIE,
 } from "@/lib/auth/user-auth";
+import { sanitizeNextPath } from "@/lib/auth/google-oauth";
 import { createVolunteerAccount, getCommunityBySlug } from "@/lib/domain/store";
 
 export async function POST(request: Request) {
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
   const phone = String(formData.get("phone") ?? "").trim();
   const additionalInfo = String(formData.get("additionalInfo") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/my-events");
+  const next = sanitizeNextPath(String(formData.get("next") ?? "/my-events"));
 
   if (!firstName || !lastName || !email || password.length < 8) {
     return NextResponse.redirect(new URL("/signup?error=1", request.url));

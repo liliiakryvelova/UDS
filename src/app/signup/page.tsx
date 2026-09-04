@@ -101,6 +101,13 @@ export default async function UserSignupPage({
           Create account
         </button>
 
+        <a
+          href={`/api/user/google/start?next=${encodeURIComponent(next)}`}
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 md:col-span-2"
+        >
+          Continue with Google
+        </a>
+
         <p className="text-center text-xs text-slate-600 md:col-span-2">
           Already have an account?{" "}
           <a href="/login" className="font-medium text-sky-800 underline-offset-2 hover:underline">

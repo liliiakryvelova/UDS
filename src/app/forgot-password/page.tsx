@@ -42,7 +42,7 @@ export default async function ForgotPasswordPage({
 
         {sent ? (
           <p className="text-sm text-emerald-700">
-            If an account exists for that email, a password reset link has been sent.
+            Your request has already been sent. Please check your email for the reset link.
           </p>
         ) : null}
 
