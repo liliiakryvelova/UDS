@@ -1,3 +1,5 @@
+import { PasswordField } from "@/components/password-field";
+
 export const dynamic = "force-dynamic";
 
 export default async function UserSignupPage({
@@ -73,13 +75,15 @@ export default async function UserSignupPage({
 
         <label className="block text-sm text-slate-700">
           Password
-          <input
-            type="password"
-            name="password"
-            minLength={8}
-            required
-            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-          />
+          <div className="mt-1">
+            <PasswordField
+              name="password"
+              minLength={8}
+              required
+              autoComplete="new-password"
+              className="rounded-xl border border-sky-200 bg-white px-3 py-2"
+            />
+          </div>
         </label>
 
         <label className="block text-sm text-slate-700 md:col-span-2">

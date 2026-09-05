@@ -1,3 +1,5 @@
+import { PasswordField } from "@/components/password-field";
+
 export const dynamic = "force-dynamic";
 
 export default async function AdminLoginPage({
@@ -36,12 +38,14 @@ export default async function AdminLoginPage({
 
         <label className="block text-sm text-slate-700">
           Password
-          <input
-            type="password"
-            name="password"
-            required
-            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-          />
+          <div className="mt-1">
+            <PasswordField
+              name="password"
+              required
+              autoComplete="current-password"
+              className="rounded-xl border border-sky-200 bg-white px-3 py-2"
+            />
+          </div>
         </label>
 
         {hasError ? <p className="text-sm text-red-600">Invalid credentials.</p> : null}

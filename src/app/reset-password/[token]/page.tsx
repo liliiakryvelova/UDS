@@ -1,3 +1,4 @@
+import { PasswordField } from "@/components/password-field";
 import { isPasswordResetTokenValid } from "@/lib/domain/store";
 
 export const dynamic = "force-dynamic";
@@ -40,24 +41,28 @@ export default async function ResetPasswordTokenPage({
 
             <label className="block text-sm text-slate-700">
               New password
-              <input
-                type="password"
-                name="password"
-                required
-                minLength={8}
-                className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-              />
+              <div className="mt-1">
+                <PasswordField
+                  name="password"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  className="rounded-xl border border-sky-200 bg-white px-3 py-2"
+                />
+              </div>
             </label>
 
             <label className="block text-sm text-slate-700">
               Confirm new password
-              <input
-                type="password"
-                name="confirmPassword"
-                required
-                minLength={8}
-                className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-              />
+              <div className="mt-1">
+                <PasswordField
+                  name="confirmPassword"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  className="rounded-xl border border-sky-200 bg-white px-3 py-2"
+                />
+              </div>
             </label>
 
             {message ? <p className="text-sm text-red-600">{message}</p> : null}
