@@ -89,6 +89,18 @@ export default async function ManageRegistrationPage({
             View event page
           </Link>
         ) : null}
+        {registration ? (
+          <form action="/api/registrations/manage/[token]" method="post">
+            <button
+              type="submit"
+              className="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700"
+              formAction={`/api/registrations/manage/${token}`}
+              formMethod="delete"
+            >
+              {isWaitlisted ? "Cancel waitlist" : "Cancel registration"}
+            </button>
+          </form>
+        ) : null}
       </div>
     </main>
   );

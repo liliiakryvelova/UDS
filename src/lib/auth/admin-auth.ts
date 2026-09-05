@@ -11,9 +11,29 @@ function signPayload(payload: string) {
   return createHmac("sha256", getSessionSecret()).update(payload).digest("hex");
 }
 
+export function getAdminEmails() {
+  const rawValue = process.env.ADMIN_EMAILS ?? process.env.ADMIN_EMAIL ?? "admin@uds.local";
+
+  return rawValue
+    .split(",")
+    .map((entry) => entry.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+export function isAdminEmailAllowed(email: string | undefined | null) {
+  if (!email) {
+    return false;
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  return getAdminEmails().includes(normalizedEmail);
+}
+
 export function getAdminCredentials() {
+  const [primaryEmail] = getAdminEmails();
+
   return {
-    email: process.env.ADMIN_EMAIL ?? "admin@uds.local",
+    email: primaryEmail ?? "admin@uds.local",
     password: process.env.ADMIN_PASSWORD ?? "admin",
   };
 }
@@ -62,6 +82,5 @@ export function verifyAdminSession(token: string | undefined | null) {
     return false;
   }
 
-  const credentials = getAdminCredentials();
-  return email === credentials.email;
+  return isAdminEmailAllowed(email);
 }

@@ -9,6 +9,7 @@ interface EventRegistrationEmailInput {
   shiftLabel: string;
   notes?: string;
   manageUrl: string;
+  cancelUrl?: string;
   registrationStatus?: "confirmed" | "waitlisted" | "checked_in" | "cancelled";
 }
 
@@ -53,6 +54,13 @@ export async function sendEventRegistrationEmail(input: EventRegistrationEmailIn
             View or manage my registration
           </a>
         </p>
+        ${input.cancelUrl ? `
+          <p>
+            <a href="${input.cancelUrl}" style="display: inline-block; margin: 10px 0; padding: 10px 16px; border-radius: 9999px; background: #b45309; color: #ffffff; text-decoration: none;">
+              ${isWaitlisted ? "Cancel my waitlist spot" : "Cancel my registration"}
+            </a>
+          </p>
+        ` : ""}
       </div>
     `,
   };

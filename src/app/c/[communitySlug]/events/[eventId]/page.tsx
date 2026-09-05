@@ -163,6 +163,9 @@ export default async function EventDetailsPage({
     };
   });
 
+  const hasAnyShiftFull = eventSlots.some((slot) => (slotConfirmedCountById[slot.id] ?? 0) >= slot.peopleNeeded);
+  const hasAnyShiftOpen = eventSlots.some((slot) => (slotConfirmedCountById[slot.id] ?? 0) < slot.peopleNeeded);
+
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-12">
       <Link href={`/c/${communitySlug}/events`} className="text-sm text-slate-500 transition hover:text-slate-900">
@@ -243,42 +246,48 @@ export default async function EventDetailsPage({
 
         <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-950">Shift and role availability</h2>
+          {hasAnyShiftFull && !hasAnyShiftOpen ? (
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
+              This event is full. Join the waitlist for a shift below.
+            </div>
+          ) : null}
           <div className="mt-4 space-y-3">
             {eventSlots.length > 0 ? (
-              eventSlots.map((slot) => (
-                <div key={slot.id} className="rounded-xl border border-sky-200 bg-white p-4">
-                  {(() => {
-                    const confirmedCount = slotConfirmedCountById[slot.id] ?? 0;
-                    const isFull = confirmedCount >= slot.peopleNeeded;
+              eventSlots.map((slot) => {
+                const confirmedCount = slotConfirmedCountById[slot.id] ?? 0;
+                const isFull = confirmedCount >= slot.peopleNeeded;
 
-                    return (
-                      <>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">
-                        {slot.slotDate} | {slot.startTime} - {slot.endTime}
-                      </p>
-                      <p className="mt-1 text-sm text-slate-700">{slot.roleName}</p>
-                    </div>
-                    <div className="flex flex-col items-end gap-2 text-right">
-                      <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 ring-1 ring-sky-100">
-                        Need {slot.peopleNeeded}
-                      </span>
-                      <span className="text-xs text-slate-600">{confirmedCount} signed up</span>
-                      {isFull ? (
-                        <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-rose-700 ring-1 ring-rose-200">
-                          Full
+                return (
+                  <div key={slot.id} className="rounded-xl border border-sky-200 bg-white p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">
+                          {slot.slotDate} | {slot.startTime} - {slot.endTime}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-700">{slot.roleName}</p>
+                      </div>
+                      <div className="flex flex-col items-end gap-2 text-right">
+                        <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 ring-1 ring-sky-100">
+                          Need {slot.peopleNeeded}
                         </span>
-                      ) : null}
+                        <span className="text-xs text-slate-600">{confirmedCount} signed up</span>
+                        {isFull ? (
+                          <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-rose-700 ring-1 ring-rose-200">
+                            Full
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
+                    {slot.meetingPoint ? <p className="mt-3 text-xs text-slate-500">Meet at {slot.meetingPoint}</p> : null}
+                    {slot.instructions ? <p className="mt-1 text-xs text-slate-500">{slot.instructions}</p> : null}
+                    {isFull ? (
+                      <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
+                        This shift is full. Join the waitlist.
+                      </p>
+                    ) : null}
                   </div>
-                  {slot.meetingPoint ? <p className="mt-3 text-xs text-slate-500">Meet at {slot.meetingPoint}</p> : null}
-                  {slot.instructions ? <p className="mt-1 text-xs text-slate-500">{slot.instructions}</p> : null}
-                      </>
-                    );
-                  })()}
-                </div>
-              ))
+                );
+              })
             ) : (
               <p className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-600">
                 Volunteer shifts have not been added yet.

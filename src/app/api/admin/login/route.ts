@@ -3,6 +3,8 @@ import {
   ADMIN_SESSION_COOKIE,
   createAdminSession,
   getAdminCredentials,
+  getAdminEmails,
+  isAdminEmailAllowed,
 } from "@/lib/auth/admin-auth";
 
 export async function POST(request: Request) {
@@ -12,8 +14,9 @@ export async function POST(request: Request) {
   const next = String(formData.get("next") ?? "/admin/events");
 
   const credentials = getAdminCredentials();
+  const normalizedEmail = email.toLowerCase();
 
-  if (email !== credentials.email || password !== credentials.password) {
+  if (!isAdminEmailAllowed(normalizedEmail) || password !== credentials.password) {
     return NextResponse.redirect(new URL("/admin/login?error=1", request.url));
   }
 

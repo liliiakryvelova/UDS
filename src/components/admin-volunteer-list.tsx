@@ -98,6 +98,30 @@ export default function AdminVolunteerList({ registrations, slots }: AdminVolunt
     setBusyId(null);
   }
 
+  async function sendReminder(registration: Registration) {
+    const confirmed = window.confirm(`Send a reminder to ${registration.fullName}?`);
+    if (!confirmed) {
+      return;
+    }
+
+    setBusyId(registration.id);
+    setStatus("");
+
+    const response = await fetch(`/api/admin/registrations/${registration.id}/reminder`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      const body = (await response.json()) as { error?: string };
+      setStatus(body.error ?? "Could not send reminder.");
+      setBusyId(null);
+      return;
+    }
+
+    setStatus("Reminder email sent.");
+    setBusyId(null);
+  }
+
   return (
     <section className="mt-8 rounded-2xl border border-sky-200 bg-sky-50/60 p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -192,6 +216,14 @@ export default function AdminVolunteerList({ registrations, slots }: AdminVolunt
                         className="rounded-full border border-sky-300 bg-sky-50 px-4 py-2 text-sm font-medium text-slate-700"
                       >
                         Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={async () => await sendReminder(registration)}
+                        disabled={isBusy}
+                        className="rounded-full border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 disabled:opacity-50"
+                      >
+                        {isBusy ? "Sending..." : "Send reminder"}
                       </button>
                       <button
                         type="button"

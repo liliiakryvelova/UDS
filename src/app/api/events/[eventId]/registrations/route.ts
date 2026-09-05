@@ -62,6 +62,7 @@ export async function POST(
 
     const appOrigin = getAppOrigin(request);
     const manageUrl = `${appOrigin}/registrations/manage/${result.manageToken}`;
+    const cancelUrl = `${appOrigin}/waitlist/cancel?token=${encodeURIComponent(result.manageToken)}`;
     const shiftLabel = `${slot.slotDate} | ${slot.startTime}-${slot.endTime} | ${slot.roleName}`;
 
     await sendEventRegistrationEmail({
@@ -74,6 +75,7 @@ export async function POST(
       shiftLabel,
       notes,
       manageUrl,
+      cancelUrl,
       registrationStatus: result.registration.status,
     });
 

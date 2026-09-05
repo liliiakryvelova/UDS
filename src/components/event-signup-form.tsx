@@ -177,19 +177,12 @@ export default function EventSignupForm({
           <textarea name="notes" rows={3} className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2" />
         </label>
 
-        {isSignedInMode ? null : (
-          <label className="flex items-start gap-2 text-sm text-slate-700">
-            <input type="checkbox" name="consentWaiverAccepted" required className="mt-1" />
-            I agree to event participation and waiver terms.
-          </label>
-        )}
-
         {!hasSlots ? (
           <p className="text-sm text-slate-600">Volunteer sign-up will open once shifts are added.</p>
         ) : !hasSelectableSlots ? (
           <p className="text-sm text-rose-700">You already have an active registration for every shift in this event.</p>
         ) : isSelectedSlotWaitlist ? (
-          <p className="text-sm text-amber-700">This shift is full. You can still join the waitlist.</p>
+          <p className="text-sm text-amber-700">This shift is full. Join the waitlist.</p>
         ) : null}
 
         {isSignedInMode && Object.keys(userRegistrationStatusBySlotId).length > 0 ? (
@@ -204,7 +197,7 @@ export default function EventSignupForm({
           disabled={isSaving || !hasSelectableSlots}
           className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
-          {isSaving ? "Submitting..." : isSelectedSlotWaitlist ? "Join Waitlist" : isSignedInMode ? "Sign Me Up" : "Register"}
+          {isSaving ? "Submitting..." : isSelectedSlotWaitlist ? "Join the waitlist" : isSignedInMode ? "Sign Me Up" : "Register"}
         </button>
 
         {status ? <p className="text-sm text-slate-700">{status}</p> : null}
