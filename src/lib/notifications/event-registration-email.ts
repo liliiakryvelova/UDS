@@ -17,9 +17,27 @@ function hasEmailProviderConfigured() {
   return Boolean(process.env.RESEND_API_KEY && process.env.RESET_FROM_EMAIL);
 }
 
+function isResendTestingModeError(body: string) {
+  return body.includes("testing email address") || body.includes("Please use our testing email address");
+}
+
+function isBlockedTestDomain(email: string) {
+  return /@example\.(com|org|net)$/i.test(email) || /@test\.com$/i.test(email);
+}
+
 export async function sendEventRegistrationEmail(input: EventRegistrationEmailInput) {
   if (!hasEmailProviderConfigured()) {
     console.info(`[registration-email] Confirmation for ${input.to}: ${input.manageUrl}`);
+    return;
+  }
+
+  if (isBlockedTestDomain(input.to)) {
+    console.warn(
+      `[registration-email] Skipping send to blocked test domain ${input.to}. ` +
+      `Resend rejects example.com/test.com in testing mode. ` +
+      `Use a real email or Resend's test inbox (delivered@resend.dev). ` +
+      `Manage link: ${input.manageUrl}`,
+    );
     return;
   }
 
@@ -78,6 +96,18 @@ export async function sendEventRegistrationEmail(input: EventRegistrationEmailIn
     if (!response.ok) {
       const body = await response.text();
       console.error(`[registration-email] Failed to send: ${response.status} ${body}`);
+
+      if (isResendTestingModeError(body)) {
+        console.warn(
+          `[registration-email] Resend is in testing mode. ` +
+          `To deliver to real inboxes: (1) verify a domain in Resend dashboard, ` +
+          `(2) set RESET_FROM_EMAIL to an address on that domain (e.g. events@yourdomain.org), ` +
+          `(3) add recipient emails to Resend's "Test Email Addresses" or use delivered@resend.dev. ` +
+          `Manage link for ${input.to}: ${input.manageUrl}`,
+        );
+      } else {
+        console.warn(`[registration-email] Manage link for ${input.to}: ${input.manageUrl}`);
+      }
     }
   } catch (error) {
     console.error("[registration-email] Unexpected error while sending registration email", error);

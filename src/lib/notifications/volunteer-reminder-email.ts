@@ -15,9 +15,26 @@ function hasEmailProviderConfigured() {
   return Boolean(process.env.RESEND_API_KEY && process.env.RESET_FROM_EMAIL);
 }
 
+function isResendTestingModeError(body: string) {
+  return body.includes("testing email address") || body.includes("Please use our testing email address");
+}
+
+function isBlockedTestDomain(email: string) {
+  return /@example\.(com|org|net)$/i.test(email) || /@test\.com$/i.test(email);
+}
+
 export async function sendVolunteerReminderEmail(input: VolunteerReminderEmailInput) {
   if (!hasEmailProviderConfigured()) {
     console.info(`[volunteer-reminder] Reminder for ${input.to}: ${input.eventName} at ${input.shiftLabel}`);
+    return;
+  }
+
+  if (isBlockedTestDomain(input.to)) {
+    console.warn(
+      `[volunteer-reminder] Skipping send to blocked test domain ${input.to}. ` +
+      `Resend rejects example.com/test.com in testing mode. ` +
+      `Use a real email or Resend's test inbox (delivered@resend.dev).`,
+    );
     return;
   }
 
@@ -64,6 +81,15 @@ export async function sendVolunteerReminderEmail(input: VolunteerReminderEmailIn
     if (!response.ok) {
       const body = await response.text();
       console.error(`[volunteer-reminder] Failed to send: ${response.status} ${body}`);
+
+      if (isResendTestingModeError(body)) {
+        console.warn(
+          `[volunteer-reminder] Resend is in testing mode. ` +
+          `To deliver to real inboxes: (1) verify a domain in Resend dashboard, ` +
+          `(2) set RESET_FROM_EMAIL to an address on that domain (e.g. events@yourdomain.org), ` +
+          `(3) add recipient emails to Resend's "Test Email Addresses" or use delivered@resend.dev.`,
+        );
+      }
     }
   } catch (error) {
     console.error("[volunteer-reminder] Unexpected error while sending reminder email", error);

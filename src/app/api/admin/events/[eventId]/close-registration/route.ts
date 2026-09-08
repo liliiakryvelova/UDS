@@ -1,9 +1,20 @@
 import { hasAdminApiSession } from "@/lib/auth/admin-guard";
+import { closeEventRegistration } from "@/lib/domain/store";
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ eventId: string }> },
+) {
   if (!hasAdminApiSession(request)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return Response.json({ message: "Not implemented yet." }, { status: 501 });
+  const { eventId } = await params;
+  const event = await closeEventRegistration(eventId);
+
+  if (!event) {
+    return Response.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  return Response.json({ event });
 }

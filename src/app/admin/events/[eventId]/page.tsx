@@ -40,7 +40,7 @@ export default async function AdminEventManagePage({
         </Link>
       </div>
 
-      <AdminEventEditor event={event} slot={primarySlot} />
+      <AdminEventEditor event={event} slots={slots} />
 
       <AdminVolunteerList registrations={registrations} slots={slots} />
     </main>

@@ -290,6 +290,118 @@ export async function getSlotsByEventId(eventId: string): Promise<ShiftRoleSlot[
   return records.map(mapSlot);
 }
 
+export async function closeEventRegistration(eventId: string) {
+  const existing = await prisma.event.findUnique({ where: { id: eventId } });
+
+  if (!existing) {
+    return undefined;
+  }
+
+  const updated = await prisma.event.update({
+    where: { id: eventId },
+    data: { status: "registration_closed" },
+  });
+
+  return mapEvent(updated);
+}
+
+export async function cancelAdminEvent(eventId: string) {
+  const existing = await prisma.event.findUnique({ where: { id: eventId } });
+
+  if (!existing) {
+    return undefined;
+  }
+
+  const updated = await prisma.event.update({
+    where: { id: eventId },
+    data: { status: "cancelled" },
+  });
+
+  return mapEvent(updated);
+}
+
+export async function createEventSlot(input: {
+  eventId: string;
+  slotDate: string;
+  startTime: string;
+  endTime: string;
+  roleName: string;
+  peopleNeeded: number;
+  meetingPoint?: string;
+  instructions?: string;
+}) {
+  const event = await prisma.event.findUnique({ where: { id: input.eventId } });
+
+  if (!event) {
+    throw new Error("EVENT_NOT_FOUND");
+  }
+
+  const slot = await prisma.eventSlot.create({
+    data: {
+      eventId: input.eventId,
+      slotDate: new Date(input.slotDate),
+      startTime: input.startTime,
+      endTime: input.endTime,
+      roleName: input.roleName,
+      peopleNeeded: input.peopleNeeded,
+      meetingPoint: input.meetingPoint?.trim() || null,
+      instructions: input.instructions?.trim() || null,
+      isActive: true,
+    },
+  });
+
+  return mapSlot(slot);
+}
+
+export async function updateEventSlot(
+  slotId: string,
+  input: Partial<{
+    slotDate: string;
+    startTime: string;
+    endTime: string;
+    roleName: string;
+    peopleNeeded: number;
+    meetingPoint?: string;
+    instructions?: string;
+  }>,
+) {
+  const existing = await prisma.eventSlot.findUnique({ where: { id: slotId } });
+
+  if (!existing) {
+    return undefined;
+  }
+
+  const updated = await prisma.eventSlot.update({
+    where: { id: slotId },
+    data: {
+      ...(input.slotDate ? { slotDate: new Date(input.slotDate) } : {}),
+      ...(input.startTime ? { startTime: input.startTime } : {}),
+      ...(input.endTime ? { endTime: input.endTime } : {}),
+      ...(input.roleName ? { roleName: input.roleName } : {}),
+      ...(input.peopleNeeded !== undefined ? { peopleNeeded: input.peopleNeeded } : {}),
+      ...(input.meetingPoint !== undefined ? { meetingPoint: input.meetingPoint.trim() || null } : {}),
+      ...(input.instructions !== undefined ? { instructions: input.instructions.trim() || null } : {}),
+    },
+  });
+
+  return mapSlot(updated);
+}
+
+export async function deleteEventSlot(slotId: string) {
+  const existing = await prisma.eventSlot.findUnique({ where: { id: slotId } });
+
+  if (!existing) {
+    return undefined;
+  }
+
+  const updated = await prisma.eventSlot.update({
+    where: { id: slotId },
+    data: { isActive: false },
+  });
+
+  return mapSlot(updated);
+}
+
 export async function getRegistrationsByEventId(eventId: string): Promise<Registration[]> {
   const records = await prisma.registration.findMany({
     where: { eventId },
