@@ -67,6 +67,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="border-t border-sky-200 bg-sky-50/85">
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-6 text-sm text-slate-600 md:flex-row md:items-center md:justify-between">
             <p>UDS Events Module. Built to support Ukraine defense volunteer coordination.</p>
+            <p>Created by Liliia Kryvelova.</p>
             <p>All rights reserved.</p>
           </div>
         </footer>
