@@ -105,3 +105,4 @@ If you want Google-only hosting with low initial cost, follow:
 
 - [docs/google-e2-micro-postgres.md](docs/google-e2-micro-postgres.md)
 
+// Fixed vercel.json - deployment trigger
