@@ -3,7 +3,6 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "nodeVersion": "20.x",
   "env": {
     "DATABASE_URL": "@neon_database_url",
     "GOOGLE_CLIENT_ID": "@google_client_id",
