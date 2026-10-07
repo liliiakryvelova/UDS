@@ -4,7 +4,7 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "env": {
-    "DATABASE_URL": "@neon_database_url",
+    "DATABASE_URL": "@test_secret",
     "GOOGLE_OAUTH_CLIENT_ID": "@google_oauth_client_id",
     "GOOGLE_OAUTH_CLIENT_SECRET": "@google_oauth_client_secret",
     "GOOGLE_OAUTH_REDIRECT_URI": "https://events.ukrainedefensesupport.org/api/user/google/callback",
