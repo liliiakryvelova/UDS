@@ -25,3 +25,33 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), "Avenir Next", "Segoe UI", sans-serif;
 }
+
+button:not(:disabled) {
+  transition:
+    transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 140ms ease,
+    box-shadow 140ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.975);
+  filter: brightness(0.97);
+}
+
+button:focus-visible {
+  outline: 3px solid rgb(14 116 144 / 28%);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled) {
+    transition-duration: 0.01ms;
+  }
+
+  button:not(:disabled):active {
+    transform: none;
+  }
+}
