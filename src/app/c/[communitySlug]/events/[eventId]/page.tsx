@@ -180,7 +180,7 @@ export default async function EventDetailsPage({
               <span>{event.status.replace("_", " ")}</span>
             </div>
 
-            <h1 className="mt-5 max-w-3xl text-4xl font-bold tracking-tight text-sky-900 md:text-5xl">{event.name}</h1>
+            <h1 className="mt-5 max-w-3xl text-3xl font-bold tracking-tight text-sky-900 md:text-4xl">{event.name}</h1>
             <p className="mt-4 max-w-3xl rounded-2xl border border-sky-100 bg-sky-50/80 p-5 text-lg leading-8 text-slate-700">
               {event.fullDescription}
             </p>
