@@ -6,7 +6,6 @@ import Link from "next/link";
 import { hasAdminPageSession } from "@/lib/auth/admin-guard";
 import { getUserSessionIdentity } from "@/lib/auth/user-guard";
 import HeaderNav from "@/components/header-nav";
-import ButtonFeedback from "@/components/button-feedback";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -69,7 +68,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-6 text-sm text-slate-600 md:flex-row md:items-center md:justify-between">
             <p>UDS Events Module. Built to support Ukraine defense volunteer coordination.</p>
             <p>Created by Liliia Kryvelova.</p>
-            <ButtonFeedback />
             <p>All rights reserved.</p>
           </div>
         </footer>
