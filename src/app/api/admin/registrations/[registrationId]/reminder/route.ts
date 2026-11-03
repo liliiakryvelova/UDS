@@ -44,7 +44,6 @@ export async function POST(
     timezone: event.timezone,
     venueName: event.venueName,
     shiftLabel: `${slot.slotDate} | ${slot.startTime}-${slot.endTime} | ${slot.roleName}`,
-    bannerImageUrl: event.bannerImageUrl,
     eventUrl,
   });
 

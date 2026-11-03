@@ -7,53 +7,8 @@ interface VolunteerReminderEmailInput {
   timezone: string;
   venueName: string;
   shiftLabel: string;
-  bannerImageUrl?: string;
   eventUrl?: string;
   notes?: string;
-}
-
-type InlineImageAttachment = {
-  filename: string;
-  contentId: string;
-  content?: string;
-  path?: string;
-};
-
-function prepareBannerImage(bannerImageUrl?: string, eventUrl?: string) {
-  const value = bannerImageUrl?.trim();
-  if (!value) return undefined;
-
-  const dataUrlMatch = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/i.exec(value);
-  if (dataUrlMatch) {
-    const mimeType = dataUrlMatch[1].toLowerCase();
-    const extension = mimeType === "image/jpeg" ? "jpg" : mimeType.slice("image/".length);
-    return {
-      src: "cid:event-banner",
-      attachment: {
-        filename: `event-banner.${extension}`,
-        content: dataUrlMatch[2],
-        contentId: "event-banner",
-      } satisfies InlineImageAttachment,
-    };
-  }
-
-  try {
-    const baseUrl = eventUrl ? new URL(eventUrl) : undefined;
-    const imageUrl = baseUrl ? new URL(value, baseUrl.origin) : new URL(value);
-    if (imageUrl.protocol !== "https:" && imageUrl.protocol !== "http:") return undefined;
-
-    const extension = imageUrl.pathname.match(/\.(jpe?g|png|webp)$/i)?.[1]?.toLowerCase() || "jpg";
-    return {
-      src: "cid:event-banner",
-      attachment: {
-        filename: `event-banner.${extension}`,
-        path: imageUrl.toString(),
-        contentId: "event-banner",
-      } satisfies InlineImageAttachment,
-    };
-  } catch {
-    return undefined;
-  }
 }
 
 function hasEmailProviderConfigured() {
@@ -83,15 +38,12 @@ export async function sendVolunteerReminderEmail(input: VolunteerReminderEmailIn
     return;
   }
 
-  const bannerImage = prepareBannerImage(input.bannerImageUrl, input.eventUrl);
-
   const payload = {
     from: process.env.RESET_FROM_EMAIL,
     to: [input.to],
     subject: `Reminder: ${input.eventName}`,
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a;">
-        ${bannerImage ? `<p style="margin: 0 0 20px;"><img src="${bannerImage.src}" alt="Event banner" width="640" style="display: block; width: 100%; max-width: 640px; height: auto; border: 0; border-radius: 12px;" /></p>` : ""}
         <h2 style="margin-bottom: 12px;">Volunteer reminder</h2>
         <p>Hello ${input.fullName || "volunteer"},</p>
         <p>This is a reminder for your upcoming volunteer shift.</p>
@@ -117,7 +69,6 @@ export async function sendVolunteerReminderEmail(input: VolunteerReminderEmailIn
         <p>Thank you for helping with the event.</p>
       </div>
     `,
-    ...(bannerImage ? { attachments: [bannerImage.attachment] } : {}),
   };
 
   try {

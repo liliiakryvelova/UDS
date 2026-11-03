@@ -3,6 +3,7 @@ import AdminEventQuickActions from "@/components/admin-event-quick-actions";
 import EventVolunteerList from "@/components/event-volunteer-list";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { hasAdminPageSession } from "@/lib/auth/admin-guard";
 import { getUserSessionIdentity } from "@/lib/auth/user-guard";
 import { getEventById, getRegistrationsByEventId, getSlotsByEventId } from "@/lib/domain/store";
@@ -173,6 +174,18 @@ export default async function EventDetailsPage({
       </Link>
 
       <section className="mt-5 overflow-hidden rounded-[2rem] border border-[#dce6f2] bg-white shadow-[0_16px_44px_-34px_rgba(23,54,88,0.3)]">
+        {event.bannerImageUrl ? (
+          <div className="relative aspect-[16/6] max-h-[28rem] w-full overflow-hidden bg-[#e8f0fa]">
+            <Image
+              src={event.bannerImageUrl}
+              alt={`${event.name} banner`}
+              fill
+              sizes="(max-width: 768px) 100vw, 1152px"
+              unoptimized
+              className="object-cover"
+            />
+          </div>
+        ) : null}
         <div className="grid gap-8 p-8 lg:grid-cols-[1.3fr_0.7fr] lg:p-10">
           <div>
             <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#71839a]">
