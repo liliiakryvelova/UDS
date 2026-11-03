@@ -14,7 +14,10 @@ export function hashPasswordResetToken(token: string) {
 export function getAppOrigin(request: Request) {
   const configuredOrigin = process.env.APP_ORIGIN?.trim();
   if (configuredOrigin) {
-    return configuredOrigin.replace(/\/+$/, "");
+    const configuredUrl = new URL(configuredOrigin);
+    if (!configuredUrl.hostname.endsWith(".vercel.app")) {
+      return configuredOrigin.replace(/\/+$/, "");
+    }
   }
 
   const url = new URL(request.url);
