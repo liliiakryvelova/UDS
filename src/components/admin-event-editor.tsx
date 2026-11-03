@@ -71,22 +71,26 @@ export default function AdminEventEditor({ event, slots }: AdminEventEditorProps
       peopleNeeded: Number(formData.get("peopleNeeded") ?? primarySlot?.peopleNeeded ?? 5),
     };
 
-    const response = await fetch(`/api/admin/events/${event.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch(`/api/admin/events/${event.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const body = (await response.json().catch(() => ({}))) as { error?: string };
 
-    if (!response.ok) {
-      const body = (await response.json()) as { error?: string };
-      setStatus(body.error ?? "Could not update event.");
+      if (!response.ok) {
+        setStatus(body.error ?? "Could not update event. Please try again.");
+        return;
+      }
+
+      setStatus("Event saved successfully.");
+      router.refresh();
+    } catch {
+      setStatus("Could not reach the server. Your changes were not saved.");
+    } finally {
       setIsSaving(false);
-      return;
     }
-
-    setStatus("Event updated.");
-    setIsSaving(false);
-    router.refresh();
   }
 
   async function onDelete() {
@@ -401,9 +405,11 @@ export default function AdminEventEditor({ event, slots }: AdminEventEditorProps
         <button
           type="submit"
           disabled={isSaving}
-          className="rounded-full bg-sky-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 md:col-span-2"
+          className={`rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 md:col-span-2 ${
+            status === "Event saved successfully." ? "bg-emerald-700" : "bg-sky-800 hover:bg-sky-900"
+          }`}
         >
-          {isSaving ? "Saving..." : "Save changes"}
+          {isSaving ? "Saving changes…" : status === "Event saved successfully." ? "✓ Saved" : "Save changes"}
         </button>
       </form>
 
@@ -443,7 +449,21 @@ export default function AdminEventEditor({ event, slots }: AdminEventEditorProps
         </button>
       </div>
 
-      {status ? <p className="mt-4 text-sm text-slate-700">{status}</p> : null}
+      {status ? (
+        <p
+          role="status"
+          aria-live="polite"
+          className={`mt-4 rounded-xl px-4 py-3 text-sm font-medium ${
+            status === "Event saved successfully."
+              ? "border border-emerald-200 bg-emerald-50 text-emerald-800"
+              : status.startsWith("Could not")
+                ? "border border-red-200 bg-red-50 text-red-800"
+                : "text-slate-700"
+          }`}
+        >
+          {status}
+        </p>
+      ) : null}
 
       <div className="mt-8 rounded-2xl border border-sky-200 bg-white p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

@@ -52,29 +52,37 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ev
     return Response.json({ error: "Missing required event fields" }, { status: 400 });
   }
 
-  const event = await updateAdminEvent({
-    eventId,
-    communityId: body.communityId,
-    name: body.name,
-    eventType: body.eventType,
-    status: body.status,
-    startDate: body.startDate,
-    endDate: body.endDate,
-    registrationDeadline: body.registrationDeadline,
-    timezone: body.timezone || "Europe/Kyiv",
-    bannerImageUrl: body.bannerImageUrl,
-    place: body.place,
-    captainName: body.captainName,
-    shortDescription: body.shortDescription,
-    fullDescription: body.fullDescription,
-    supplies: Array.isArray(body.supplies) ? body.supplies : [],
-    slotId: body.slotId,
-    slotStartTime: body.slotStartTime || "09:00",
-    slotEndTime: body.slotEndTime || "12:00",
-    peopleNeeded: Number(body.peopleNeeded) > 0 ? Number(body.peopleNeeded) : 5,
-  });
+  try {
+    const event = await updateAdminEvent({
+      eventId,
+      communityId: body.communityId,
+      name: body.name,
+      eventType: body.eventType,
+      status: body.status,
+      startDate: body.startDate,
+      endDate: body.endDate,
+      registrationDeadline: body.registrationDeadline,
+      timezone: body.timezone || "Europe/Kyiv",
+      bannerImageUrl: body.bannerImageUrl,
+      place: body.place,
+      captainName: body.captainName,
+      shortDescription: body.shortDescription,
+      fullDescription: body.fullDescription,
+      supplies: Array.isArray(body.supplies) ? body.supplies : [],
+      slotId: body.slotId,
+      slotStartTime: body.slotStartTime || "09:00",
+      slotEndTime: body.slotEndTime || "12:00",
+      peopleNeeded: Number(body.peopleNeeded) > 0 ? Number(body.peopleNeeded) : 5,
+    });
 
-  return Response.json({ event });
+    return Response.json({ event });
+  } catch (error) {
+    console.error("Failed to update event:", error);
+    return Response.json(
+      { error: "Could not save event changes. Please check the database schema and try again." },
+      { status: 500 },
+    );
+  }
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ eventId: string }> }) {

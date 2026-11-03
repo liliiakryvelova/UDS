@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { EventItem } from "@/lib/domain/types";
 
 function formatEventDate(date: string, options: Intl.DateTimeFormatOptions) {
@@ -19,6 +20,16 @@ export default function PublicEventCard({
   return (
     <article className="public-event-card group w-full max-w-[22rem] self-stretch">
       <div className="public-event-card__art">
+        {event.bannerImageUrl ? (
+          <Image
+            className="public-event-card__image"
+            src={event.bannerImageUrl}
+            alt={`${event.name} banner`}
+            fill
+            sizes="(max-width: 768px) 100vw, 352px"
+            unoptimized
+          />
+        ) : null}
         <span className="public-event-card__circle public-event-card__circle--one" aria-hidden="true" />
         <span className="public-event-card__circle public-event-card__circle--two" aria-hidden="true" />
         <span className="public-event-card__circle public-event-card__circle--three" aria-hidden="true" />
