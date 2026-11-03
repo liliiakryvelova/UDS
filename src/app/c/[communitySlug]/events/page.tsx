@@ -75,7 +75,7 @@ export default async function CommunityEventsPage({
 
               <Link
                 href={`/c/${communitySlug}/events/${event.id}`}
-                className="mt-auto inline-flex self-start items-center justify-center rounded-full bg-[#205b53] px-5 py-2.5 text-sm font-semibold text-white transition group-hover:bg-[#17473f]"
+                className="mt-auto inline-flex self-center items-center justify-center rounded-full bg-[#205b53] px-5 py-2.5 text-sm font-semibold text-white transition group-hover:bg-[#17473f]"
               >
                 Open Event
               </Link>

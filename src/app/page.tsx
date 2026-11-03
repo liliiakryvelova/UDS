@@ -125,7 +125,7 @@ export default async function Home({
                       <p className="mt-3 text-xs leading-5 text-[#7b8982]">
                         {event.startDate} - {event.endDate} | {event.venueName}
                       </p>
-                      <span className="mt-auto inline-flex self-start rounded-full bg-[#205b53] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[#17473f]">
+                      <span className="mt-auto inline-flex self-center rounded-full bg-[#205b53] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[#17473f]">
                         Open Event
                       </span>
                     </div>
