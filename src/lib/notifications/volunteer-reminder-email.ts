@@ -62,6 +62,9 @@ export async function sendVolunteerReminderEmail(input: VolunteerReminderEmailIn
               View event details
             </a>
           </p>
+          <p style="margin-top: 0; font-size: 13px; color: #475569;">
+            Event link: <a href="${input.eventUrl}" style="color: #0369a1;">${input.eventUrl}</a>
+          </p>
         ` : ""}
         <p>Thank you for helping with the event.</p>
       </div>
