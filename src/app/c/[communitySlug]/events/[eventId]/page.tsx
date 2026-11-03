@@ -167,50 +167,50 @@ export default async function EventDetailsPage({
   const hasAnyShiftOpen = eventSlots.some((slot) => (slotConfirmedCountById[slot.id] ?? 0) < slot.peopleNeeded);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-12">
-      <Link href={`/c/${communitySlug}/events`} className="text-sm text-slate-500 transition hover:text-slate-900">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10 md:py-14">
+      <Link href={`/c/${communitySlug}/events`} className="text-sm font-medium text-[#71817c] transition hover:text-[#205b53]">
         {"<- Back to events"}
       </Link>
 
-      <section className="mt-5 overflow-hidden rounded-[2rem] border border-sky-200 bg-white shadow-sm">
+      <section className="mt-5 overflow-hidden rounded-[2rem] border border-[#e2e9e3] bg-white shadow-[0_16px_44px_-34px_rgba(24,58,55,0.3)]">
         <div className="grid gap-8 p-8 lg:grid-cols-[1.3fr_0.7fr] lg:p-10">
           <div>
-            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              <span className="rounded-full bg-sky-800 px-3 py-1 text-white">{eventTypeLabel(event.eventType)}</span>
+            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#71817c]">
+              <span className="rounded-full bg-[#205b53] px-3 py-1 text-white">{eventTypeLabel(event.eventType)}</span>
               <span>{event.status.replace("_", " ")}</span>
             </div>
 
-            <h1 className="mt-5 max-w-3xl text-3xl font-bold tracking-tight text-sky-900 md:text-4xl">{event.name}</h1>
-            <p className="mt-4 max-w-3xl rounded-2xl border border-sky-100 bg-sky-50/80 p-5 text-lg leading-8 text-slate-700">
+            <h1 className="mt-5 max-w-3xl text-3xl font-semibold tracking-[-0.04em] text-[#183a37] md:text-4xl">{event.name}</h1>
+            <p className="mt-4 max-w-3xl rounded-2xl border border-[#e6ece7] bg-[#f7f9f6] p-5 text-base leading-7 text-[#5e716b] md:text-lg md:leading-8">
               {event.fullDescription}
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-700">
-              <span className="rounded-full bg-sky-50 px-4 py-2 ring-1 ring-sky-100">{formatDateRange(event.startDate, event.endDate)}</span>
-              <span className="rounded-full bg-sky-50 px-4 py-2 ring-1 ring-sky-100">{event.timezone}</span>
-              <span className="rounded-full bg-sky-50 px-4 py-2 ring-1 ring-sky-100">Registration closes {formatDateTime(event.registrationDeadline, event.timezone)}</span>
+            <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#52645e]">
+              <span className="rounded-full bg-[#edf4ef] px-4 py-2 ring-1 ring-[#e0ebe3]">{formatDateRange(event.startDate, event.endDate)}</span>
+              <span className="rounded-full bg-[#edf4ef] px-4 py-2 ring-1 ring-[#e0ebe3]">{event.timezone}</span>
+              <span className="rounded-full bg-[#edf4ef] px-4 py-2 ring-1 ring-[#e0ebe3]">Registration closes {formatDateTime(event.registrationDeadline, event.timezone)}</span>
             </div>
           </div>
 
-          <aside className="rounded-[1.5rem] border border-sky-200 bg-sky-50 p-6 text-slate-900">
-            <p className="text-sm uppercase tracking-[0.2em] text-sky-700">Event details</p>
+          <aside className="rounded-[1.5rem] border border-[#e0ebe3] bg-[#f4f7f3] p-6 text-[#183a37]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#52786d]">Event details</p>
             <dl className="mt-4 space-y-4 text-sm">
               <div>
-                <dt className="text-sky-700">Location</dt>
-                <dd className="mt-1 text-base font-medium text-slate-900">{event.venueName}</dd>
-                <dd className="text-slate-700">{event.fullAddress}</dd>
+                <dt className="text-[#71817c]">Location</dt>
+                <dd className="mt-1 text-base font-medium text-[#183a37]">{event.venueName}</dd>
+                <dd className="text-[#687972]">{event.fullAddress}</dd>
               </div>
               <div>
-                <dt className="text-sky-700">Captain</dt>
-                <dd className="mt-1 text-base font-medium text-slate-900">{event.captainName ?? "TBD"}</dd>
+                <dt className="text-[#71817c]">Captain</dt>
+                <dd className="mt-1 text-base font-medium text-[#183a37]">{event.captainName ?? "TBD"}</dd>
               </div>
               <div>
-                <dt className="text-sky-700">Volunteer slots</dt>
-                <dd className="mt-1 text-base font-medium text-slate-900">{eventSlots.length} available shift{eventSlots.length === 1 ? "" : "s"}</dd>
+                <dt className="text-[#71817c]">Volunteer slots</dt>
+                <dd className="mt-1 text-base font-medium text-[#183a37]">{eventSlots.length} available shift{eventSlots.length === 1 ? "" : "s"}</dd>
               </div>
               <div>
-                <dt className="text-sky-700">What to bring</dt>
-                <dd className="mt-1 text-base font-medium text-slate-900">{event.supplies.length > 0 ? event.supplies.join(", ") : "No supplies listed yet"}</dd>
+                <dt className="text-[#71817c]">What to bring</dt>
+                <dd className="mt-1 text-base font-medium text-[#183a37]">{event.supplies.length > 0 ? event.supplies.join(", ") : "No supplies listed yet"}</dd>
               </div>
             </dl>
           </aside>
@@ -220,34 +220,34 @@ export default async function EventDetailsPage({
       {isAdminLoggedIn ? <AdminEventQuickActions eventId={event.id} eventName={event.name} /> : null}
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-950">Why this event matters</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-700">
+        <div className="rounded-2xl border border-[#e2e9e3] bg-white p-6 shadow-[0_10px_30px_-24px_rgba(24,58,55,0.25)]">
+          <h2 className="text-lg font-semibold tracking-[-0.02em] text-[#183a37]">Why this event matters</h2>
+          <p className="mt-3 text-sm leading-7 text-[#687972]">
             {event.shortDescription}
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Dates</p>
-              <p className="mt-2 text-sm font-medium text-slate-900">{formatDateRange(event.startDate, event.endDate)}</p>
+            <div className="rounded-xl bg-[#f7f9f6] p-4 ring-1 ring-[#e8ede8]">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#71817c]">Dates</p>
+              <p className="mt-2 text-sm font-medium text-[#183a37]">{formatDateRange(event.startDate, event.endDate)}</p>
             </div>
-            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Timezone</p>
-              <p className="mt-2 text-sm font-medium text-slate-900">{event.timezone}</p>
+            <div className="rounded-xl bg-[#f7f9f6] p-4 ring-1 ring-[#e8ede8]">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#71817c]">Timezone</p>
+              <p className="mt-2 text-sm font-medium text-[#183a37]">{event.timezone}</p>
             </div>
-            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Captain</p>
-              <p className="mt-2 text-sm font-medium text-slate-900">{event.captainName ?? "TBD"}</p>
+            <div className="rounded-xl bg-[#f7f9f6] p-4 ring-1 ring-[#e8ede8]">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#71817c]">Captain</p>
+              <p className="mt-2 text-sm font-medium text-[#183a37]">{event.captainName ?? "TBD"}</p>
             </div>
-            <div className="rounded-xl bg-white p-4 ring-1 ring-sky-100">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Supplies</p>
-              <p className="mt-2 text-sm font-medium text-slate-900">{event.supplies.length > 0 ? event.supplies.join(", ") : "None listed"}</p>
+            <div className="rounded-xl bg-[#f7f9f6] p-4 ring-1 ring-[#e8ede8]">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#71817c]">Supplies</p>
+              <p className="mt-2 text-sm font-medium text-[#183a37]">{event.supplies.length > 0 ? event.supplies.join(", ") : "None listed"}</p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-950">Shift and role availability</h2>
+        <div className="rounded-2xl border border-[#e2e9e3] bg-white p-6 shadow-[0_10px_30px_-24px_rgba(24,58,55,0.25)]">
+          <h2 className="text-lg font-semibold tracking-[-0.02em] text-[#183a37]">Shift and role availability</h2>
           {hasAnyShiftFull && !hasAnyShiftOpen ? (
             <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
               This event is full. Join the waitlist for a shift below.
@@ -260,19 +260,19 @@ export default async function EventDetailsPage({
                 const isFull = confirmedCount >= slot.peopleNeeded;
 
                 return (
-                  <div key={slot.id} className="rounded-xl border border-sky-200 bg-white p-4">
+                  <div key={slot.id} className="rounded-xl border border-[#e2e9e3] bg-[#fcfdfb] p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-slate-900">
+                        <p className="text-sm font-semibold text-[#183a37]">
                           {slot.slotDate} | {slot.startTime} - {slot.endTime}
                         </p>
-                        <p className="mt-1 text-sm text-slate-700">{slot.roleName}</p>
+                        <p className="mt-1 text-sm text-[#687972]">{slot.roleName}</p>
                       </div>
                       <div className="flex flex-col items-end gap-2 text-right">
-                        <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700 ring-1 ring-sky-100">
+                        <span className="rounded-full bg-[#edf4ef] px-3 py-1 text-xs font-medium text-[#52786d] ring-1 ring-[#e0ebe3]">
                           Need {slot.peopleNeeded}
                         </span>
-                        <span className="text-xs text-slate-600">{confirmedCount} signed up</span>
+                        <span className="text-xs text-[#71817c]">{confirmedCount} signed up</span>
                         {isFull ? (
                           <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-rose-700 ring-1 ring-rose-200">
                             Full

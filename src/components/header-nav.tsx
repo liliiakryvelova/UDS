@@ -11,8 +11,8 @@ interface HeaderNavProps {
 
 function navItemClass(active: boolean) {
   return active
-    ? "rounded-full border border-sky-800 bg-sky-800 px-4 py-2 font-medium text-white shadow-sm"
-    : "rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900";
+    ? "rounded-full border border-[#205b53] bg-[#205b53] px-4 py-2 font-medium text-white shadow-sm shadow-[#205b53]/15"
+    : "rounded-full border border-[#e0e8e2] bg-white/80 px-4 py-2 font-medium text-[#52645e] transition hover:border-[#c5d8ce] hover:bg-white hover:text-[#183a37]";
 }
 
 export default function HeaderNav({ isAdminLoggedIn, isUserLoggedIn, userFullName }: HeaderNavProps) {
@@ -36,7 +36,7 @@ export default function HeaderNav({ isAdminLoggedIn, isUserLoggedIn, userFullNam
           <form action="/api/admin/logout" method="post">
             <button
               type="submit"
-              className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+              className="rounded-full border border-[#e0e8e2] bg-white/80 px-4 py-2 font-medium text-[#52645e] transition hover:border-[#c5d8ce] hover:bg-white hover:text-[#183a37]"
             >
               Log Out
             </button>
@@ -53,7 +53,7 @@ export default function HeaderNav({ isAdminLoggedIn, isUserLoggedIn, userFullNam
           <form action="/api/user/logout" method="post">
             <button
               type="submit"
-              className="rounded-full border border-sky-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition hover:bg-sky-50 hover:text-slate-900"
+              className="rounded-full border border-[#e0e8e2] bg-white/80 px-4 py-2 font-medium text-[#52645e] transition hover:border-[#c5d8ce] hover:bg-white hover:text-[#183a37]"
             >
               Log Out
             </button>

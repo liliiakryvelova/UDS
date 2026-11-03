@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f6f2;
-  --foreground: #111827;
+  color-scheme: light;
+  --background: #f5f7f4;
+  --foreground: #183a37;
+  --ink: #183a37;
+  --muted: #71817c;
+  --line: #e2e9e4;
+  --teal: #205b53;
+  --teal-deep: #17473f;
+  --coral: #d98769;
+  --paper: #ffffff;
 }
 
 @theme inline {
@@ -13,17 +21,34 @@
   --font-brand-display: var(--font-brand-display);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #f4f6f2;
-    --foreground: #111827;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--background);
 }
 
 body {
+  min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), "Avenir Next", "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: #d6e8df;
+  color: var(--ink);
 }
 
 button:not(:disabled) {
@@ -42,8 +67,12 @@ button:not(:disabled):active {
 }
 
 button:focus-visible {
-  outline: 3px solid rgb(14 116 144 / 28%);
+  outline: 3px solid rgb(32 91 83 / 28%);
   outline-offset: 3px;
+}
+
+a {
+  text-underline-offset: 0.2em;
 }
 
 @media (prefers-reduced-motion: reduce) {
