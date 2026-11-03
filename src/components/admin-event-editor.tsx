@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import BannerImageDropzone from "@/components/banner-image-dropzone";
 import type { EventItem, ShiftRoleSlot } from "@/lib/domain/types";
 
 interface AdminEventEditorProps {
@@ -312,16 +313,10 @@ export default function AdminEventEditor({ event, slots }: AdminEventEditorProps
           </select>
         </label>
 
-        <label className="text-sm text-slate-700 md:col-span-2">
-          Banner image URL (optional)
-          <input
-            type="url"
-            name="bannerImageUrl"
-            defaultValue={event.bannerImageUrl ?? ""}
-            placeholder="https://example.com/event-banner.jpg"
-            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-          />
-        </label>
+        <div className="text-sm text-slate-700 md:col-span-2">
+          <p className="mb-1">Banner image (optional)</p>
+          <BannerImageDropzone initialValue={event.bannerImageUrl ?? ""} />
+        </div>
 
         <label className="text-sm text-slate-700">
           Place

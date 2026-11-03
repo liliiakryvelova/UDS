@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BannerImageDropzone from "@/components/banner-image-dropzone";
 
 const TIMEZONE_OPTIONS = [
   { value: "Europe/Kyiv", label: "Kyiv" },
@@ -122,15 +123,10 @@ export default function AdminEventForm() {
           </select>
         </label>
 
-        <label className="text-sm text-slate-700 md:col-span-2">
-          Banner image URL (optional)
-          <input
-            type="url"
-            name="bannerImageUrl"
-            placeholder="https://example.com/event-banner.jpg"
-            className="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2"
-          />
-        </label>
+        <div className="text-sm text-slate-700 md:col-span-2">
+          <p className="mb-1">Banner image (optional)</p>
+          <BannerImageDropzone />
+        </div>
 
         <label className="text-sm text-slate-700">
           Place
