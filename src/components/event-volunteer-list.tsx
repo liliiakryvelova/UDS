@@ -27,6 +27,7 @@ function slotLabel(slot: ShiftRoleSlot | undefined) {
 export default function EventVolunteerList({ registrations, slots, isAdminLoggedIn }: EventVolunteerListProps) {
   const [items, setItems] = useState(registrations);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<"remove" | "reminder" | null>(null);
   const [status, setStatus] = useState("");
 
   async function removeVolunteer(registrationId: string) {
@@ -37,23 +38,59 @@ export default function EventVolunteerList({ registrations, slots, isAdminLogged
     }
 
     setBusyId(registrationId);
+    setBusyAction("remove");
     setStatus("");
 
-    const response = await fetch(`/api/admin/registrations/${registrationId}`, {
-      method: "DELETE",
-    });
+    try {
+      const response = await fetch(`/api/admin/registrations/${registrationId}`, {
+        method: "DELETE",
+      });
 
-    if (!response.ok) {
-      const body = (await response.json()) as { error?: string };
-      setStatus(body.error ?? "Could not remove volunteer.");
+      if (!response.ok) {
+        const body = (await response.json().catch(() => ({}))) as { error?: string };
+        setStatus(body.error ?? "Could not remove volunteer.");
+        return;
+      }
+
+      const removed = (await response.json()) as { id: string };
+      setItems((current) => current.filter((registration) => registration.id !== removed.id));
+      setStatus("Volunteer removed.");
+    } catch {
+      setStatus("Could not reach the server. Please try again.");
+    } finally {
       setBusyId(null);
+      setBusyAction(null);
+    }
+  }
+
+  async function sendReminder(registration: VolunteerListItem) {
+    const confirmed = window.confirm(`Send an email reminder to ${registration.displayName}?`);
+    if (!confirmed) {
       return;
     }
 
-    const removed = (await response.json()) as { id: string };
-    setItems((current) => current.filter((registration) => registration.id !== removed.id));
-    setBusyId(null);
-    setStatus("Volunteer removed.");
+    setBusyId(registration.id);
+    setBusyAction("reminder");
+    setStatus("");
+
+    try {
+      const response = await fetch(`/api/admin/registrations/${registration.id}/reminder`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const body = (await response.json().catch(() => ({}))) as { error?: string };
+        setStatus(body.error ?? "Could not send reminder.");
+        return;
+      }
+
+      setStatus(`Reminder email sent to ${registration.displayName}.`);
+    } catch {
+      setStatus("Could not reach the server. Please try again.");
+    } finally {
+      setBusyId(null);
+      setBusyAction(null);
+    }
   }
 
   return (
@@ -89,14 +126,22 @@ export default function EventVolunteerList({ registrations, slots, isAdminLogged
                 <p className="mt-1 text-sm text-slate-700">{slotLabel(slot)}</p>
 
                 {isAdminLoggedIn ? (
-                  <div className="mt-3">
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={async () => await sendReminder(registration)}
+                      disabled={isBusy}
+                      className="rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-800 transition hover:bg-emerald-100 disabled:opacity-50"
+                    >
+                      {isBusy && busyAction === "reminder" ? "Sending reminder…" : "Send reminder"}
+                    </button>
                     <button
                       type="button"
                       onClick={async () => await removeVolunteer(registration.id)}
                       disabled={isBusy}
                       className="rounded-full border border-red-300 px-3 py-1.5 text-xs font-medium text-red-700 disabled:opacity-50"
                     >
-                      {isBusy ? "Removing..." : "Remove volunteer"}
+                      {isBusy && busyAction === "remove" ? "Removing…" : "Remove volunteer"}
                     </button>
                   </div>
                 ) : null}

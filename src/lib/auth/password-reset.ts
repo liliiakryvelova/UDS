@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 
 export const PASSWORD_RESET_TOKEN_TTL_MS = 1000 * 60 * 30;
+const DEFAULT_APP_ORIGIN = "https://events.ukrainedefensesupport.org";
 
 export function createPasswordResetToken() {
   return randomBytes(32).toString("base64url");
@@ -11,10 +12,15 @@ export function hashPasswordResetToken(token: string) {
 }
 
 export function getAppOrigin(request: Request) {
-  if (process.env.APP_ORIGIN) {
-    return process.env.APP_ORIGIN;
+  const configuredOrigin = process.env.APP_ORIGIN?.trim();
+  if (configuredOrigin) {
+    return configuredOrigin.replace(/\/+$/, "");
   }
 
   const url = new URL(request.url);
-  return `${url.protocol}//${url.host}`;
+  if (url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "[::1]") {
+    return url.origin;
+  }
+
+  return DEFAULT_APP_ORIGIN;
 }
