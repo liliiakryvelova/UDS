@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { DM_Serif_Display } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
 import { hasAdminPageSession } from "@/lib/auth/admin-guard";
 import { getUserSessionIdentity } from "@/lib/auth/user-guard";
@@ -48,7 +47,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <header className="sticky top-0 z-30 border-b border-[#dce6f2]/90 bg-[#f3f7fc]/90 backdrop-blur-xl">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/Logo_header.svg" alt="UDS logo" width={38} height={38} className="h-[38px] w-[38px]" priority />
               <span className={`${brandDisplay.variable} rounded-xl border-2 border-[#4b8de0] bg-[#1859a9] px-3 py-2 font-brand-display text-[1.7rem] leading-none tracking-[-0.03em] text-white shadow-sm`}>
                 Ukraine Defence Support Events
               </span>
