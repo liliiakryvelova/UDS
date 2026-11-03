@@ -1,6 +1,7 @@
-import { getUpcomingPublishedEventsByCommunitySlug } from "@/lib/domain/store";
+import { getPublicUpcomingEventsByCommunitySlug } from "@/lib/domain/public-events";
 import Link from "next/link";
 import type { EventItem } from "@/lib/domain/types";
+import PublicEventCard from "@/components/public-event-card";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,7 @@ export default async function Home({
   const eventGroups = await Promise.all(
     communities.map(async (community) => ({
       ...community,
-      events: sortByCalendarOrder(await getUpcomingPublishedEventsByCommunitySlug(community.slug)),
+      events: sortByCalendarOrder(await getPublicUpcomingEventsByCommunitySlug(community.slug)),
     })),
   );
 
@@ -105,31 +106,11 @@ export default async function Home({
             <div className="mt-4 grid auto-rows-fr items-stretch justify-items-center gap-4 md:grid-cols-2 xl:grid-cols-3">
               {group.events.length > 0 ? (
                 group.events.map((event) => (
-                  <Link
+                  <PublicEventCard
                     key={event.id}
+                    event={event}
                     href={`/c/${group.slug}/events/${event.id}`}
-                    className="group flex min-h-[22rem] w-full max-w-sm self-stretch flex-col overflow-hidden rounded-[1.4rem] border border-[#dce6f2] bg-white shadow-[0_12px_30px_-24px_rgba(23,54,88,0.35)] transition duration-200 hover:-translate-y-1 hover:border-[#b8cce5] hover:shadow-[0_20px_40px_-25px_rgba(23,54,88,0.28)]"
-                  >
-                    {event.bannerImageUrl ? (
-                      <img
-                        src={event.bannerImageUrl}
-                        alt={`${event.name} banner`}
-                        className="h-36 w-full object-cover"
-                      />
-                    ) : null}
-
-                    <div className="flex flex-1 flex-col p-4">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#59789f]">{event.eventType}</p>
-                      <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-[#172f4d]">{event.name}</h3>
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#5e718b]">{event.shortDescription}</p>
-                      <p className="mt-3 text-xs leading-5 text-[#71839a]">
-                        {event.startDate} - {event.endDate} | {event.venueName}
-                      </p>
-                      <span className="mt-auto inline-flex self-center rounded-full bg-[#205b53] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[#17473f]">
-                        Open Event
-                      </span>
-                    </div>
-                  </Link>
+                  />
                 ))
               ) : (
                 <div className="w-full rounded-2xl border border-dashed border-[#b8cce5] bg-white/75 p-6 text-sm text-[#71839a] md:col-span-2 xl:col-span-3">

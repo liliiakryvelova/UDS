@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${brandDisplay.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <header className="sticky top-0 z-30 border-b border-[#dce6f2]/90 bg-[#f3f7fc]/90 backdrop-blur-xl">
