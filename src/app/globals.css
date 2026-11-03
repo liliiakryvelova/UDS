@@ -2,14 +2,14 @@
 
 :root {
   color-scheme: light;
-  --background: #f5f7f4;
-  --foreground: #183a37;
-  --ink: #183a37;
-  --muted: #71817c;
-  --line: #e2e9e4;
-  --teal: #205b53;
-  --teal-deep: #17473f;
-  --coral: #d98769;
+  --background: #f3f7fc;
+  --foreground: #172f4d;
+  --ink: #172f4d;
+  --muted: #71839a;
+  --line: #dce6f2;
+  --teal: #1859a9;
+  --teal-deep: #124784;
+  --coral: #4b8de0;
   --paper: #ffffff;
 }
 
@@ -47,7 +47,7 @@ select {
 }
 
 ::selection {
-  background: #d6e8df;
+  background: #d9e7f7;
   color: var(--ink);
 }
 

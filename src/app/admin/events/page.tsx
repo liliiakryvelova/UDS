@@ -93,7 +93,7 @@ export default async function AdminEventsPage({
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Admin dashboard</p>
           <h1 className="mt-1 text-3xl font-bold tracking-tight">Events</h1>
-          <p className="mt-2 text-sm text-slate-600">Create and manage UDS events.</p>
+          <p className="mt-2 text-sm text-slate-600">Manage Ukraine Defence Support Events.</p>
         </div>
 
         <form action="/api/admin/logout" method="post">

@@ -17,12 +17,12 @@ export async function sendPasswordResetEmail(input: PasswordResetEmailInput) {
   const payload = {
     from: process.env.RESET_FROM_EMAIL,
     to: [input.to],
-    subject: "Reset your UDS Events password",
+    subject: "Reset your Ukraine Defence Support Events password",
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #0f172a;">
         <h2 style="margin-bottom: 12px;">Password reset request</h2>
         <p>Hello ${input.fullName || "volunteer"},</p>
-        <p>We received a request to reset your UDS Events password.</p>
+        <p>We received a request to reset your Ukraine Defence Support Events password.</p>
         <p>
           <a href="${input.resetUrl}" style="display: inline-block; margin: 10px 0; padding: 10px 16px; border-radius: 9999px; background: #0369a1; color: #ffffff; text-decoration: none;">
             Reset Password
